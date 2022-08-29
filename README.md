@@ -1,5 +1,6 @@
 # rest-api-cake
-this is simple REST API with CakePHP -> snippetbox
+this is simple REST API with CakePHP -> snippetbox  
+And, this repository for my morning practice.
 
 # License
 MIT License
@@ -16,6 +17,16 @@ MIT License
 |`POST`|`/user/login`|Authenticate and login the user|
 |`POST`|`/user/logout`|Logout the user|
 |`GET`|`/admin`|Return all user data with user's snippets|
+
+
+
+## Progress :gorilla:
+- [x] :gorilla: build environment
+- [x] :gorilla: bake controller and model based on table 
+- [ ] :gorilla: prepare signup method
+- [ ] :gorilla: prepare authenticate, login and logout method
+- [ ] :gorilla: prepare create snippet method
+- [ ] :gorilla: prepare find all|a snippet method
 
 
 
