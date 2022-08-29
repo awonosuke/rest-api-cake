@@ -172,3 +172,5 @@ fabric.properties
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,phpstorm+all,cakephp3,visualstudiocode,phpunit
+
+.env
