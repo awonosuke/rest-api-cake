@@ -48,19 +48,21 @@ class AppController extends Controller
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-
         $this->viewBuilder()->disableAutoLayout(false);
-        $this->viewBuilder()->setTemplatePath('Pages');
-        $this->RequestHandler->respondAs('json', ['charset' => 'UTF-8']);
+
+        $this->autoRender = false;
     }
 
     /**
      * Render method
      *
+     * @param mixed|array|object $response
      * @return void
      */
-    protected function renderJson()
+    protected function renderJson($response)
     {
-        $this->render('json');
+        return $this->response
+            ->withType("application/json; charset=UTF-8")
+            ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
     }
 }
