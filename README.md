@@ -19,24 +19,27 @@ MIT License
 | `GET`  | `/admin`          | Return all user data with user's snippets |
 
 
-[//]: # (## Status Code)
+## Status Code
 
-[//]: # (- `1000`: Succeeded Processing)
-
-[//]: # (- `2000`: Sever Error)
-
-[//]: # (- `3000`: Authentication Error)
+- `200`: Succeeded Processing
+- `4XX`: Client Error
+- `400`: Bad Request
+- `401`: Unauthorized
+- `403`: Forbidden
+- `404`: Not Found
+- `405`: Method Not Allowed
+- `500`: Sever Error
 
 
 ## Progress :gorilla:
 - [x] :gorilla: build environment
 - [x] :gorilla: bake controller and model based on table 
 - [x] :gorilla: setup for JSON response
-- [ ] :gorilla: setup for JSON response when Exception thrown
-- [ ] :gorilla: prepare signup method
+- [x] :gorilla: prepare signup method
 - [ ] :gorilla: prepare authenticate, login and logout method
 - [ ] :gorilla: prepare create snippet method
 - [ ] :gorilla: prepare find all|a snippet method
+- [ ] :gorilla: setup for JSON response when Exception thrown
 
 
 
