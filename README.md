@@ -1,6 +1,5 @@
 # rest-api-cake
 this is simple REST API with CakePHP -> snippetbox  
-And, this repository for my morning practice.
 
 # License
 MIT License
@@ -20,10 +19,19 @@ MIT License
 | `GET`  | `/admin`          | Return all user data with user's snippets |
 
 
+[//]: # (## Status Code)
+
+[//]: # (- `1000`: Succeeded Processing)
+
+[//]: # (- `2000`: Sever Error)
+
+[//]: # (- `3000`: Authentication Error)
+
 
 ## Progress :gorilla:
 - [x] :gorilla: build environment
 - [x] :gorilla: bake controller and model based on table 
+- [ ] :gorilla: setup for JSON response
 - [ ] :gorilla: prepare signup method
 - [ ] :gorilla: prepare authenticate, login and logout method
 - [ ] :gorilla: prepare create snippet method
