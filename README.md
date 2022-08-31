@@ -31,7 +31,8 @@ MIT License
 ## Progress :gorilla:
 - [x] :gorilla: build environment
 - [x] :gorilla: bake controller and model based on table 
-- [ ] :gorilla: setup for JSON response
+- [x] :gorilla: setup for JSON response
+- [ ] :gorilla: setup for JSON response when Exception thrown
 - [ ] :gorilla: prepare signup method
 - [ ] :gorilla: prepare authenticate, login and logout method
 - [ ] :gorilla: prepare create snippet method
