@@ -46,10 +46,10 @@ MIT License
 - [x] :gorilla: bake controller and model based on table 
 - [x] :gorilla: setup for JSON response
 - [x] :gorilla: prepare signup method
-- [ ] :gorilla: prepare login and logout method
 - [ ] :gorilla: prepare create snippet method
 - [ ] :gorilla: prepare find All or A snippet method
 - [ ] :gorilla: prepare authenticate method
+- [ ] :gorilla: prepare login and logout method
 - [ ] :gorilla: setup for JSON response when Exception thrown
 
 
