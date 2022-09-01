@@ -15,7 +15,7 @@ MIT License
 | `POST` | `/user/signup`    | Create a new user                         |
 | `POST` | `/user/login`     | Authenticate and login the user           |
 | `POST` | `/user/logout`    | Logout the user                           |
-| `POST` | `user/resign`     | Resign from snippetbox                    |                                          |
+| `POST` | `/user/resign`    | Resign from snippetbox                    |                                          |
 | `GET`  | `/admin`          | Return all user data with user's snippets |
 
 

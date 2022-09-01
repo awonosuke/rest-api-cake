@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 use App\Library\Response;
+use Cake\Http\Exception\BadRequestException;
 
 /**
  * Users Controller
@@ -46,29 +47,46 @@ class UsersController extends AppController
         return $this->renderJson($response->formatResponse());
     }
 
-    public function loginApi()
+//    public function loginApi()
+//    {
+//        $this->request->allowMethod('post');
+//
+//        $result = $this->Authentication->getResult();
+//        if ($result->isValid()) {
+//            $login_user = $this->Authentication->getIdentity();
+//            $response = new Response(200, ['id' => '']);
+//        }
+//
+//        $response = new Response(401, []);
+//    }
+
+//    public function logoutApi()
+//    {
+//        $this->request->allowMethod('post');
+//
+//        $result = $this->Authentication->getResult();
+//        if ($result->isValid()) {
+//            $this->Authentication->logout();
+//        }
+//
+//        $response = new Response(200, 'Logout complete');
+//        return $this->renderJson($response);
+//    }
+
+    public function resignApi()
     {
         $this->request->allowMethod('post');
 
-        $result = $this->Authentication->getResult();
-        if ($result->isValid()) {
-            $login_user = $this->Authentication->getIdentity();
-            $response = new Response(200, ['id' => '']);
+        $user_id = $this->request->getData('id');
+        if (is_null($user_id)) throw new BadRequestException();
+
+        $user = $this->Users->get($user_id);
+        if ($this->Users->delete($user)) {
+            $response = new Response(200, 'Resign snippetbox');
+            return $this->renderJson($response);
         }
 
-        $response = new Response(401, []);
-    }
-
-    public function logoutApi()
-    {
-        $this->request->allowMethod('post');
-
-        $result = $this->Authentication->getResult();
-        if ($result->isValid()) {
-            $this->Authentication->logout();
-        }
-
-        $response = new Response(200, 'Logout complete');
+        $response = new Response(500, 'Failed resign snippetbox');
         return $this->renderJson($response);
     }
 }
