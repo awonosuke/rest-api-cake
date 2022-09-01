@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Event\EventInterface;
 
 /**
  * Application Controller
@@ -42,12 +43,29 @@ class AppController extends Controller
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
-        $this->loadComponent('Flash');
 
-        /*
-         * Enable the following component for recommended CakePHP form protection settings.
-         * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
-         */
-        //$this->loadComponent('FormProtection');
+//        $this->loadComponent('Authentication.Authentication');
+    }
+
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        $this->viewBuilder()->disableAutoLayout(false);
+
+        $this->autoRender = false;
+    }
+
+    /**
+     * Render JSON response method
+     *
+     * @param mixed|array|object $response
+     * @return void
+     */
+    protected function renderJson($response)
+    {
+        return $this->response
+            ->withType("application/json; charset=UTF-8")
+            ->withCharset('UTF-8')
+            ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
     }
 }

@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
+use App\Library\Response;
+use Cake\Http\Exception\BadRequestException;
+
 /**
  * Users Controller
  *
@@ -10,95 +14,79 @@ namespace App\Controller;
  */
 class UsersController extends AppController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
-     */
-    public function index()
+    public function initialize(): void
     {
-        $users = $this->paginate($this->Users);
+        parent::initialize();
+    }
 
-        $this->set(compact('users'));
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+
+//        $this->Authentication->allowUnauthenticated(['login', 'signup]);
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id User id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $user = $this->Users->get($id, [
-            'contain' => [],
-        ]);
-
-        $this->set(compact('user'));
-    }
-
-    /**
-     * Add method
+     * Signup method: Create a new user
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function signupApi()
     {
-        $user = $this->Users->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
+        // POST以外は405エラー(with `Allow`ヘッダー)
+        $this->request->allowMethod('post');
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        $new_user = $this->Users->newEntity($this->request->getData());
+        if ($this->Users->save($new_user)) {
+            $response = new Response(200, $new_user);
+            return $this->renderJson($response->formatResponse());
         }
-        $this->set(compact('user'));
+
+        // 保存に失敗した場合エラー返す
+        $response = new Response(400, $new_user->getErrors());
+        return $this->renderJson($response->formatResponse());
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id User id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $user = $this->Users->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
+//    public function loginApi()
+//    {
+//        $this->request->allowMethod('post');
+//
+//        $result = $this->Authentication->getResult();
+//        if ($result->isValid()) {
+//            $login_user = $this->Authentication->getIdentity();
+//            $response = new Response(200, ['id' => '']);
+//        }
+//
+//        $response = new Response(401, []);
+//    }
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
-        }
-        $this->set(compact('user'));
-    }
+//    public function logoutApi()
+//    {
+//        $this->request->allowMethod('post');
+//
+//        $result = $this->Authentication->getResult();
+//        if ($result->isValid()) {
+//            $this->Authentication->logout();
+//        }
+//
+//        $response = new Response(200, 'Logout complete');
+//        return $this->renderJson($response);
+//    }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id User id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
+    public function resignApi()
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $user = $this->Users->get($id);
+        $this->request->allowMethod('post');
+
+        $user_id = $this->request->getData('id');
+        if (is_null($user_id)) throw new BadRequestException();
+
+        $user = $this->Users->get($user_id);
         if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
-        } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
+            $response = new Response(200, 'Resign snippetbox');
+            return $this->renderJson($response);
         }
 
-        return $this->redirect(['action' => 'index']);
+        $response = new Response(500, 'Failed resign snippetbox');
+        return $this->renderJson($response);
     }
 }
