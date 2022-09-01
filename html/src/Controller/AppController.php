@@ -43,6 +43,8 @@ class AppController extends Controller
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
+
+//        $this->loadComponent('Authentication.Authentication');
     }
 
     public function beforeFilter(EventInterface $event)
@@ -54,7 +56,7 @@ class AppController extends Controller
     }
 
     /**
-     * Render method
+     * Render JSON response method
      *
      * @param mixed|array|object $response
      * @return void
@@ -63,6 +65,7 @@ class AppController extends Controller
     {
         return $this->response
             ->withType("application/json; charset=UTF-8")
+            ->withCharset('UTF-8')
             ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
     }
 }
