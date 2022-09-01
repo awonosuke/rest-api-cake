@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
+use App\Library\Response;
+
 /**
  * Users Controller
  *
@@ -13,6 +16,13 @@ class UsersController extends AppController
     public function initialize(): void
     {
         parent::initialize();
+    }
+
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+
+//        $this->Authentication->allowUnauthenticated(['login', 'signup]);
     }
 
     /**
@@ -27,13 +37,38 @@ class UsersController extends AppController
 
         $new_user = $this->Users->newEntity($this->request->getData());
         if ($this->Users->save($new_user)) {
-            $response = ['code' => 200, 'user' => $new_user];
-
-            return $this->renderJson($response);
+            $response = new Response(200, $new_user);
+            return $this->renderJson($response->formatResponse());
         }
 
         // 保存に失敗した場合エラー返す
-        $response = ['code' => 400, 'error' => $new_user->getErrors()];
+        $response = new Response(400, $new_user->getErrors());
+        return $this->renderJson($response->formatResponse());
+    }
+
+    public function loginApi()
+    {
+        $this->request->allowMethod('post');
+
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $login_user = $this->Authentication->getIdentity();
+            $response = new Response(200, ['id' => '']);
+        }
+
+        $response = new Response(401, []);
+    }
+
+    public function logoutApi()
+    {
+        $this->request->allowMethod('post');
+
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $this->Authentication->logout();
+        }
+
+        $response = new Response(200, 'Logout complete');
         return $this->renderJson($response);
     }
 }
