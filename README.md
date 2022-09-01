@@ -29,6 +29,16 @@ MIT License
 - `404`: Not Found
 - `405`: Method Not Allowed
 - `500`: Sever Error
+- `600`: Zero Data
+
+
+## JSON response format
+```
+{
+  'code': XXX,
+  'body': {inner_object}
+}
+```
 
 
 ## Progress :gorilla:
@@ -36,9 +46,10 @@ MIT License
 - [x] :gorilla: bake controller and model based on table 
 - [x] :gorilla: setup for JSON response
 - [x] :gorilla: prepare signup method
-- [ ] :gorilla: prepare authenticate, login and logout method
+- [ ] :gorilla: prepare login and logout method
 - [ ] :gorilla: prepare create snippet method
-- [ ] :gorilla: prepare find all|a snippet method
+- [ ] :gorilla: prepare find All or A snippet method
+- [ ] :gorilla: prepare authenticate method
 - [ ] :gorilla: setup for JSON response when Exception thrown
 
 
