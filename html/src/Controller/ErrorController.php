@@ -39,7 +39,7 @@ class ErrorController extends AppController
      * beforeFilter callback.
      *
      * @param \Cake\Event\EventInterface $event Event.
-     * @return \Cake\Http\Response|null|void
+     * @return void
      */
     public function beforeFilter(EventInterface $event)
     {
