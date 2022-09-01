@@ -28,6 +28,12 @@ use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 
+//use Authentication\AuthenticationService;
+//use Authentication\AuthenticationServiceInterface;
+//use Authentication\AuthenticationServiceProviderInterface;
+//use Authentication\Middleware\AuthenticationMiddleware;
+//use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Application setup class.
  *
@@ -35,6 +41,7 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  * want to use in your application.
  */
 class Application extends BaseApplication
+//    implements AuthenticationServiceProviderInterface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -64,6 +71,7 @@ class Application extends BaseApplication
         }
 
         // Load more plugins here
+//        $this->addPlugin('Authentication');
     }
 
     /**
@@ -103,6 +111,9 @@ class Application extends BaseApplication
 //                'httponly' => true,
 //            ]));
 
+            // Add authentication middleware.
+//            ->add(new AuthenticationMiddleware($this));
+
         return $middlewareQueue;
     }
 
@@ -133,4 +144,39 @@ class Application extends BaseApplication
 
         // Load more plugins here
     }
+
+//    /**
+//     * サービスプロバイダのインスタンスを返す
+//     *
+//     * @param ServerRequestInterface $request
+//     * @return AuthenticationServiceInterface
+//     */
+//    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+//    {
+//        $authenticationService = new AuthenticationService([
+//            'unauthenticatedRedirect' => '/user/login',
+//            'queryParam' => 'redirect',
+//        ]);
+//
+//        // 識別子をロードして、電子メールとパスワードのフィールドを確認します
+//        $authenticationService->loadIdentifier('Authentication.Password', [
+//            'fields' => [
+//                'username' => 'email',
+//                'password' => 'password',
+//            ]
+//        ]);
+//
+//        // 認証子をロードするには、最初にセッションを実行する必要があります
+//        $authenticationService->loadAuthenticator('Authentication.Session');
+//        // メールとパスワードを選択するためのフォームデータチェックの設定
+//        $authenticationService->loadAuthenticator('Authentication.Form', [
+//            'fields' => [
+//                'username' => 'email',
+//                'password' => 'password',
+//            ],
+//            'loginUrl' => '/user/login',
+//        ]);
+//
+//        return $authenticationService;
+//    }
 }
