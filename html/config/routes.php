@@ -49,6 +49,9 @@ return static function (RouteBuilder $routes) {
 
         $builder->connect('/user/signup', ['controller' => 'Users', 'action' => 'signupApi']);
 
+        $builder->connect('/user/login', ['controller' => 'Users', 'action' => 'loginApi']);
+        $builder->connect('/user/logout', ['controller' => 'Users', 'action' => 'logoutApi']);
+
         $builder->fallbacks();
     });
 };
