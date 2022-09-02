@@ -47,10 +47,16 @@ return static function (RouteBuilder $routes) {
     $routes->scope('/', function (RouteBuilder $builder) {
         $builder->setExtensions(['json']);
 
-        $builder->connect('/user/signup', ['controller' => 'Users', 'action' => 'signupApi']);
+        $builder->connect('/user/signup', ['controller' => 'Users', 'action' => 'signupApi'])->setMethods(['POST']);
+        $builder->connect('/user/:id/resign', ['controller' => 'Users', 'action' => 'resignApi'])->setMethods(['POST']);
 
-        $builder->connect('/user/login', ['controller' => 'Users', 'action' => 'loginApi']);
-        $builder->connect('/user/logout', ['controller' => 'Users', 'action' => 'logoutApi']);
+        // authentication routing
+        $builder->connect('/user/login', ['controller' => 'Users', 'action' => 'loginApi'])->setMethods(['POST']);
+        $builder->connect('/user/logout', ['controller' => 'Users', 'action' => 'logoutApi'])->setMethods(['POST']);
+
+        $builder->connect('/snippet/all', ['controller' => 'Snippets', 'action' => 'allSnippetApi'])->setMethods(['GET']);
+        $builder->connect('/snippet/{snippetId}', ['controller' => 'Snippets', 'action' => 'getSnippetApi'])->setPatterns(['snippetId' => '[0-9]+'])->setPass(['snippetId'])->setMethods(['GET']);
+        $builder->connect('/snippet/create', ['controller' => 'Snippets', 'action' => 'createSnippetApi'])->setMethods(['POST']);
 
         $builder->fallbacks();
     });

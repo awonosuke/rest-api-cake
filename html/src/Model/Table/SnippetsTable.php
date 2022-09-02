@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -92,5 +94,21 @@ class SnippetsTable extends Table
         $rules->add($rules->existsIn('user_id', 'Users'), ['errorField' => 'user_id']);
 
         return $rules;
+    }
+
+    public function findAllExistSnippet(): Query
+    {
+        $snippets = TableRegistry::getTableLocator()->get('Snippets');
+        return $snippets->find()->where([
+            'expire >' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+        ]);
+    }
+
+    public function findAllExpiredSnippet(): Query
+    {
+        $snippets = TableRegistry::getTableLocator()->get('Snippets');
+        return $snippets->find()->where([
+            'expire <=' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+        ]);
     }
 }

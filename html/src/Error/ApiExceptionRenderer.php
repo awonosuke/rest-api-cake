@@ -5,14 +5,14 @@ use Cake\Error\ExceptionRenderer;
 
 class ApiExceptionRenderer extends ExceptionRenderer
 {
-    public function methodNotAllowed($error)
-    {
-        $response = [
-            'code' => 3000,
-            'error' => 'Method Not Allowed'
-        ];
-        return $this->renderJson($response);
-    }
+//    public function methodNotAllowed($error)
+//    {
+//        $response = [
+//            'code' => 405,
+//            'error' => 'Method Not Allowed'
+//        ];
+//        return $this->renderJson($response);
+//    }
 
     /**
      * @param string[] $response
