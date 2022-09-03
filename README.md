@@ -5,7 +5,6 @@ this is simple REST API with CakePHP -> snippetbox
 MIT License
 
 
-
 ## End point
 | Method | Pettern            | Action                                    |
 |:-------|:-------------------|:------------------------------------------|
@@ -29,10 +28,10 @@ MIT License
 - `404`: Not Found
 - `405`: Method Not Allowed
 - `500`: Sever Error
-- `600`: Zero Data
 
 
 ## JSON response format
+
 
 ```
 // default response structure
@@ -79,7 +78,6 @@ MIT License
 - [ ] :gorilla: setup for JSON response when Exception thrown
 - [ ] :gorilla: prepare authenticate method
 - [ ] :gorilla: prepare login and logout method
-
 
 
 ## For me
