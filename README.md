@@ -40,6 +40,7 @@ MIT License
   "code": 200,
   "url": "https://example.com",
   "body": {
+    "message": "message",
     "property": "value",
     ...
   }
@@ -49,11 +50,21 @@ MIT License
 {
   "code": 400~500,
   "url": "https://example.com",
-  "message": "error message"
-  "errors": {
-    { error object },
-    ...
+  "body" {
+    "message": "error message",
+    "errorCount": int 0~,
+    "error": {
+      { error object },
+      ...
+    }
   }
+}
+
+// if unwraped Exeption occur
+{
+  "code": 400~500,
+  "url": "https://example.com",
+  "message": "Error message"
 }
 ```
 
