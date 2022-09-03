@@ -6,7 +6,7 @@ MIT License
 
 
 ## End point
-| Method | Pettern            | Action                                    |
+| Method | Pattern            | Action                                    |
 |:-------|:-------------------|:------------------------------------------|
 | `GET`  | `/snippet/all`     | Return all snippet                        |
 | `GET`  | `/snippet/:id`     | Return a specific snippet                 |
