@@ -29,13 +29,10 @@ class UsersController extends AppController
     /**
      * Signup method: Create a new user
      *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response
      */
-    public function signupApi()
+    public function signupApi(): \Cake\Http\Response
     {
-        // POST以外は405エラー(with `Allow`ヘッダー)
-        $this->request->allowMethod('post');
-
         $new_user = $this->Users->newEntity($this->request->getData());
         if ($this->Users->save($new_user)) {
             $response = new Response(200, $new_user);
@@ -73,12 +70,15 @@ class UsersController extends AppController
 //        return $this->renderJson($response);
 //    }
 
-    public function resignApi()
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function resignApi(): \Cake\Http\Response
     {
         $this->request->allowMethod('post');
 
         $user_id = $this->request->getData('id');
-        if (is_null($user_id)) throw new BadRequestException();
+        if (is_null($user_id)) throw new BadRequestException('User id is required');
 
         $user = $this->Users->get($user_id);
         if ($this->Users->delete($user)) {
@@ -86,7 +86,7 @@ class UsersController extends AppController
             return $this->renderJson($response);
         }
 
-        $response = new Response(500, 'Failed resign snippetbox');
+        $response = new Response(200, 'Failed resign snippetbox');
         return $this->renderJson($response);
     }
 }

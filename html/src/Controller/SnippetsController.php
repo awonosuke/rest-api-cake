@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Library\Response;
-use Cake\I18n\FrozenTime;
 
 /**
  * Snippets Controller
@@ -13,7 +12,10 @@ use Cake\I18n\FrozenTime;
  */
 class SnippetsController extends AppController
 {
-    public function createSnippetApi()
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function createSnippetApi(): \Cake\Http\Response
     {
         $new_snippet = $this->Snippets->newEntity($this->request->getData());
         if ($this->Snippets->save($new_snippet)) {
@@ -25,7 +27,11 @@ class SnippetsController extends AppController
         return $this->renderJson($response->formatResponse());
     }
 
-    public function getSnippetApi(int $snippet_id)
+    /**
+     * @param int $snippet_id
+     * @return \Cake\Http\Response
+     */
+    public function getSnippetApi(int $snippet_id): \Cake\Http\Response
     {
         $snippet = $this->Snippets->get($snippet_id); // if snippet does not find, then throw RecordNotFoundException
 
@@ -33,7 +39,7 @@ class SnippetsController extends AppController
         return $this->renderJson($response->formatResponse());
     }
 
-    public function allSnippetApi()
+    public function allSnippetApi(): \Cake\Http\Response
     {
         $all_snippet = $this->Snippets->findAllExistSnippet();
         if (empty($all_snippet)) {
@@ -45,7 +51,10 @@ class SnippetsController extends AppController
         return $this->renderJson($response->formatResponse());
     }
 
-    public function allExpiredSnippetApi()
+    /**
+     * @return \Cake\Http\Response
+     */
+    public function allExpiredSnippetApi(): \Cake\Http\Response
     {
         $all_expire_snippet = $this->Snippets->findAllExpiredSnippet();
         if (empty($all_expire_snippet)) {

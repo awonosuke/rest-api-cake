@@ -18,6 +18,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
+use Cake\Http\Response;
 
 /**
  * Application Controller
@@ -61,9 +62,9 @@ class AppController extends Controller
      * Render JSON response method
      *
      * @param mixed|array|object $response
-     * @return void
+     * @return Response JSON response
      */
-    protected function renderJson($response)
+    protected function renderJson($response): Response
     {
         return $this->response
             ->withType("application/json; charset=UTF-8")
