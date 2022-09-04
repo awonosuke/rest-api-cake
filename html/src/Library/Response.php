@@ -9,7 +9,7 @@ class Response {
     private object $body;
 
     private const CODE_MIN = 200;
-    private const CODE_MAX = 500;
+    private const CODE_MAX = 599;
 
     /**
      * @param int $code
