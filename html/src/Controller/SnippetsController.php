@@ -14,6 +14,7 @@ class SnippetsController extends AppController
 {
     /**
      * @return \Cake\Http\Response
+     * @throws \Exception
      */
     public function createSnippetApi(): \Cake\Http\Response
     {
@@ -25,13 +26,14 @@ class SnippetsController extends AppController
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(400, $request_url, $new_snippet->getErrors());
+        $response = new Response(400, $request_url, (object) $new_snippet->getErrors());
         return $this->renderJson($response->formatResponse());
     }
 
     /**
      * @param int $snippet_id
      * @return \Cake\Http\Response
+     * @throws \Exception
      */
     public function getSnippetApi(int $snippet_id): \Cake\Http\Response
     {
@@ -43,13 +45,17 @@ class SnippetsController extends AppController
         return $this->renderJson($response->formatResponse());
     }
 
+    /**
+     * @return \Cake\Http\Response
+     * @throws \Exception
+     */
     public function allSnippetApi(): \Cake\Http\Response
     {
         $request_url = $this->request->getRequestTarget();
 
         $all_snippet = $this->Snippets->findAllExistSnippet();
         if (empty($all_snippet)) {
-            $response = new Response(200, $request_url, ['message' => 'Snippet Not Found']);
+            $response = new Response(200, $request_url, (object) ['message' => 'Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
 
@@ -59,6 +65,7 @@ class SnippetsController extends AppController
 
     /**
      * @return \Cake\Http\Response
+     * @throws \Exception
      */
     public function allExpiredSnippetApi(): \Cake\Http\Response
     {
@@ -66,7 +73,7 @@ class SnippetsController extends AppController
 
         $all_expire_snippet = $this->Snippets->findAllExpiredSnippet();
         if (empty($all_expire_snippet)) {
-            $response = new Response(200, $request_url, ['message' => 'Expired Snippet Not Found']);
+            $response = new Response(200, $request_url, (object) ['message' => 'Expired Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
 

@@ -30,6 +30,7 @@ class UsersController extends AppController
      * Signup method: Create a new user
      *
      * @return \Cake\Http\Response
+     * @throws \Exception
      */
     public function signupApi(): \Cake\Http\Response
     {
@@ -42,7 +43,7 @@ class UsersController extends AppController
         }
 
         // 保存に失敗した場合エラー返す
-        $response = new Response(400, $request_url, $new_user->getErrors());
+        $response = new Response(400, $request_url, (object) $new_user->getErrors());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -74,6 +75,7 @@ class UsersController extends AppController
 
     /**
      * @return \Cake\Http\Response
+     * @throws \Exception
      */
     public function resignApi(): \Cake\Http\Response
     {
@@ -84,11 +86,11 @@ class UsersController extends AppController
 
         $user = $this->Users->get($user_id);
         if ($this->Users->delete($user)) {
-            $response = new Response(200, $request_url, 'Resign snippetbox');
+            $response = new Response(200, $request_url, (object) ['message' => 'Resign snippetbox']);
             return $this->renderJson($response);
         }
 
-        $response = new Response(200, $request_url, 'Failed resign snippetbox');
+        $response = new Response(200, $request_url, (object) ['message' => 'Failed resign snippetbox']);
         return $this->renderJson($response);
     }
 }
