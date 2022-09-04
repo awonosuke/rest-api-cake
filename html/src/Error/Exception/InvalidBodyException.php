@@ -7,11 +7,11 @@ use Cake\Core\Exception\Exception;
 
 class InvalidBodyException extends Exception
 {
-    protected $_defaultCode = 500;
+    protected $_defaultCode = StatusInternalServerError;
     protected $_messageTemplate = 'Invalid response body';
 
     public function __construct()
     {
-        parent::__construct('Invalid response body', 500);
+        parent::__construct('Invalid response body', StatusInternalServerError);
     }
 }

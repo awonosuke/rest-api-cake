@@ -7,11 +7,11 @@ use Cake\Core\Exception\Exception;
 
 class InvalidUrlException extends Exception
 {
-    protected $_defaultCode = 500;
+    protected $_defaultCode = StatusInternalServerError;
     protected $_messageTemplate = 'Invalid response url';
 
     public function __construct()
     {
-        parent::__construct('Invalid response url', 500);
+        parent::__construct('Invalid response url', StatusInternalServerError);
     }
 }
