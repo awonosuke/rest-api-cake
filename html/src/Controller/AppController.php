@@ -38,6 +38,7 @@ class AppController extends Controller
      * e.g. `$this->loadComponent('FormProtection');`
      *
      * @return void
+     * @throws \Exception
      */
     public function initialize(): void
     {
@@ -48,6 +49,10 @@ class AppController extends Controller
 //        $this->loadComponent('Authentication.Authentication');
     }
 
+    /**
+     * @param EventInterface $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);

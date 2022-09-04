@@ -33,14 +33,16 @@ class UsersController extends AppController
      */
     public function signupApi(): \Cake\Http\Response
     {
+        $request_url = $this->request->getRequestTarget();
+
         $new_user = $this->Users->newEntity($this->request->getData());
         if ($this->Users->save($new_user)) {
-            $response = new Response(200, $new_user);
+            $response = new Response(200, $request_url, $new_user);
             return $this->renderJson($response->formatResponse());
         }
 
         // 保存に失敗した場合エラー返す
-        $response = new Response(400, $new_user->getErrors());
+        $response = new Response(400, $request_url, $new_user->getErrors());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -75,18 +77,18 @@ class UsersController extends AppController
      */
     public function resignApi(): \Cake\Http\Response
     {
-        $this->request->allowMethod('post');
+        $request_url = $this->request->getRequestTarget();
 
         $user_id = $this->request->getData('id');
         if (is_null($user_id)) throw new BadRequestException('User id is required');
 
         $user = $this->Users->get($user_id);
         if ($this->Users->delete($user)) {
-            $response = new Response(200, 'Resign snippetbox');
+            $response = new Response(200, $request_url, 'Resign snippetbox');
             return $this->renderJson($response);
         }
 
-        $response = new Response(200, 'Failed resign snippetbox');
+        $response = new Response(200, $request_url, 'Failed resign snippetbox');
         return $this->renderJson($response);
     }
 }

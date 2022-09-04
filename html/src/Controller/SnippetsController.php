@@ -17,13 +17,15 @@ class SnippetsController extends AppController
      */
     public function createSnippetApi(): \Cake\Http\Response
     {
+        $request_url = $this->request->getRequestTarget();
+
         $new_snippet = $this->Snippets->newEntity($this->request->getData());
         if ($this->Snippets->save($new_snippet)) {
-            $response = new Response(200, $new_snippet);
+            $response = new Response(200, $request_url, $new_snippet);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(400, $new_snippet->getErrors());
+        $response = new Response(400, $request_url, $new_snippet->getErrors());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -33,21 +35,25 @@ class SnippetsController extends AppController
      */
     public function getSnippetApi(int $snippet_id): \Cake\Http\Response
     {
+        $request_url = $this->request->getRequestTarget();
+
         $snippet = $this->Snippets->get($snippet_id); // if snippet does not find, then throw RecordNotFoundException
 
-        $response = new Response(200, $snippet);
+        $response = new Response(200, $request_url, $snippet);
         return $this->renderJson($response->formatResponse());
     }
 
     public function allSnippetApi(): \Cake\Http\Response
     {
+        $request_url = $this->request->getRequestTarget();
+
         $all_snippet = $this->Snippets->findAllExistSnippet();
         if (empty($all_snippet)) {
-            $response = new Response(200, ['message' => 'Snippet Not Found']);
+            $response = new Response(200, $request_url, ['message' => 'Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(200, $all_snippet);
+        $response = new Response(200, $request_url, $all_snippet);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -56,13 +62,15 @@ class SnippetsController extends AppController
      */
     public function allExpiredSnippetApi(): \Cake\Http\Response
     {
+        $request_url = $this->request->getRequestTarget();
+
         $all_expire_snippet = $this->Snippets->findAllExpiredSnippet();
         if (empty($all_expire_snippet)) {
-            $response = new Response(200, ['message' => 'Expired Snippet Not Found']);
+            $response = new Response(200, $request_url, ['message' => 'Expired Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(200, $all_expire_snippet);
+        $response = new Response(200, $request_url, $all_expire_snippet);
         return $this->renderJson($response->formatResponse());
     }
 }
