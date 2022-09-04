@@ -59,7 +59,7 @@ MIT License
   }
 }
 
-// if unwraped Exeption occur
+// if unwraped Exception occur
 {
   "code": 400~500,
   "url": "https://example.com",
