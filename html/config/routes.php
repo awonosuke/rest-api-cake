@@ -48,7 +48,7 @@ return static function (RouteBuilder $routes) {
         $builder->setExtensions(['json']);
 
         $builder->connect('/user/signup', ['controller' => 'Users', 'action' => 'signupApi'])->setMethods(['POST']);
-        $builder->connect('/user/:id/resign', ['controller' => 'Users', 'action' => 'resignApi'])->setMethods(['POST']);
+        $builder->connect('/user/{userId}/resign', ['controller' => 'Users', 'action' => 'resignApi'])->setPatterns(['userId' => '[0-9]+'])->setPass(['userId'])->setMethods(['POST']);
 
         // authentication routing
         $builder->connect('/user/login', ['controller' => 'Users', 'action' => 'loginApi'])->setMethods(['POST']);
