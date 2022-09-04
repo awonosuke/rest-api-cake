@@ -66,10 +66,10 @@ class AppController extends Controller
     /**
      * Render JSON response method
      *
-     * @param mixed|array|object $response
+     * @param array $response
      * @return Response JSON response
      */
-    protected function renderJson($response): Response
+    protected function renderJson(array $response): Response
     {
         return $this->response
             ->withType("application/json; charset=UTF-8")

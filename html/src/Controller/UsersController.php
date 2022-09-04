@@ -30,7 +30,6 @@ class UsersController extends AppController
      * Signup method: Create a new user
      *
      * @return \Cake\Http\Response
-     * @throws \Exception
      */
     public function signupApi(): \Cake\Http\Response
     {
@@ -38,12 +37,12 @@ class UsersController extends AppController
 
         $new_user = $this->Users->newEntity($this->request->getData());
         if ($this->Users->save($new_user)) {
-            $response = new Response(200, $request_url, $new_user);
+            $response = new Response(StatusOK, $request_url, $new_user);
             return $this->renderJson($response->formatResponse());
         }
 
         // 保存に失敗した場合エラー返す
-        $response = new Response(400, $request_url, (object) $new_user->getErrors());
+        $response = new Response(StatusBadRequest, $request_url, (object) $new_user->getErrors());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -74,23 +73,22 @@ class UsersController extends AppController
 //    }
 
     /**
+     * Resign method: Delete a user
+     *
+     * @param int $user_id
      * @return \Cake\Http\Response
-     * @throws \Exception
      */
-    public function resignApi(): \Cake\Http\Response
+    public function resignApi(int $user_id): \Cake\Http\Response
     {
         $request_url = $this->request->getRequestTarget();
 
-        $user_id = $this->request->getData('id');
-        if (is_null($user_id)) throw new BadRequestException('User id is required');
-
-        $user = $this->Users->get($user_id);
+        $user = $this->Users->get($user_id); // if user does not find, then throw RecordNotFoundException
         if ($this->Users->delete($user)) {
-            $response = new Response(200, $request_url, (object) ['message' => 'Resign snippetbox']);
-            return $this->renderJson($response);
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Resign snippetbox']);
+            return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(200, $request_url, (object) ['message' => 'Failed resign snippetbox']);
-        return $this->renderJson($response);
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed resign snippetbox']);
+        return $this->renderJson($response->formatResponse());
     }
 }
