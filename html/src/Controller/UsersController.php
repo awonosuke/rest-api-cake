@@ -30,7 +30,6 @@ class UsersController extends AppController
      * Signup method: Create a new user
      *
      * @return \Cake\Http\Response
-     * @throws \Exception
      */
     public function signupApi(): \Cake\Http\Response
     {
@@ -38,12 +37,12 @@ class UsersController extends AppController
 
         $new_user = $this->Users->newEntity($this->request->getData());
         if ($this->Users->save($new_user)) {
-            $response = new Response(200, $request_url, $new_user);
+            $response = new Response(StatusOK, $request_url, $new_user);
             return $this->renderJson($response->formatResponse());
         }
 
         // 保存に失敗した場合エラー返す
-        $response = new Response(400, $request_url, (object) $new_user->getErrors());
+        $response = new Response(StatusBadRequest, $request_url, (object) $new_user->getErrors());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -74,9 +73,10 @@ class UsersController extends AppController
 //    }
 
     /**
+     * Resign method: Delete a user
+     *
      * @param int $user_id
      * @return \Cake\Http\Response
-     * @throws \Exception
      */
     public function resignApi(int $user_id): \Cake\Http\Response
     {
@@ -84,11 +84,11 @@ class UsersController extends AppController
 
         $user = $this->Users->get($user_id); // if user does not find, then throw RecordNotFoundException
         if ($this->Users->delete($user)) {
-            $response = new Response(200, $request_url, (object) ['message' => 'Resign snippetbox']);
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Resign snippetbox']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(200, $request_url, (object) ['message' => 'Failed resign snippetbox']);
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed resign snippetbox']);
         return $this->renderJson($response->formatResponse());
     }
 }
