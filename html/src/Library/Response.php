@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Library;
 
+use App\Error\Exception\InvalidBodyException;
+use App\Error\Exception\InvalidCodeException;
+use App\Error\Exception\InvalidUrlException;
+
 class Response {
     private int $code;
     private string $url;
@@ -15,18 +19,21 @@ class Response {
      * @param int $code
      * @param string $url
      * @param object $body
-     * @throws \Exception
+     *
+     * @throws InvalidBodyException
+     * @throws InvalidUrlException
+     * @throws InvalidBodyException
      */
     function __construct(int $code, string $url, object $body)
     {
-        if ($code < self::CODE_MIN) throw new \Exception('Invalid status code');
-        if ($code > self::CODE_MAX) throw new \Exception('Invalid status code');
+        if ($code < self::CODE_MIN) throw new InvalidCodeException();
+        if ($code > self::CODE_MAX) throw new InvalidCodeException();
         $this->code = $code;
 
-        if ($url === "") throw new \Exception('Invalid request url');
+        if ($url === "") throw new InvalidUrlException();
         $this->url  = $url;
 
-        if (empty((array) $body)) throw new \Exception('Invalid response body');
+        if (empty((array) $body)) throw new InvalidBodyException();
         $this->body = $body;
     }
 
