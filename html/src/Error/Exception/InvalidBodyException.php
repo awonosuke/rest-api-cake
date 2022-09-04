@@ -3,9 +3,15 @@ declare(strict_types=1);
 
 namespace App\Error\Exception;
 
-use Cake\Http\Exception\HttpException;
+use Cake\Core\Exception\Exception;
 
-class InvalidBodyException extends HttpException
+class InvalidBodyException extends Exception
 {
-    // define exception
+    protected $_defaultCode = 500;
+    protected $_messageTemplate = 'Invalid response body';
+
+    public function __construct()
+    {
+        parent::__construct('Invalid response body', 500);
+    }
 }
