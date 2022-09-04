@@ -8,13 +8,20 @@ class Response {
     private string $url;
     private $body;
 
+    private const CODE_MIN = 200;
+    private const CODE_MAX = 500;
+
     /**
      * @param int|null $code
      * @param string|null $url
      * @param mixed $body
+     * @throws \Exception
      */
     function __construct(int $code, string $url, $body = null)
     {
+        if ($code < self::CODE_MIN) throw new \Exception('Invalid status code');
+        if ($code > self::CODE_MAX) throw new \Exception('Invalid status code');
+
         $this->code = $code;
         $this->url  = $url;
         $this->body = $body;
