@@ -5,9 +5,8 @@ this is simple REST API with CakePHP -> snippetbox
 MIT License
 
 
-
 ## End point
-| Method | Pettern            | Action                                    |
+| Method | Pattern            | Action                                    |
 |:-------|:-------------------|:------------------------------------------|
 | `GET`  | `/snippet/all`     | Return all snippet                        |
 | `GET`  | `/snippet/:id`     | Return a specific snippet                 |
@@ -29,10 +28,10 @@ MIT License
 - `404`: Not Found
 - `405`: Method Not Allowed
 - `500`: Sever Error
-- `600`: Zero Data
 
 
 ## JSON response format
+
 
 ```
 // default response structure
@@ -40,6 +39,7 @@ MIT License
   "code": 200,
   "url": "https://example.com",
   "body": {
+    "message": "message",
     "property": "value",
     ...
   }
@@ -49,11 +49,21 @@ MIT License
 {
   "code": 400~500,
   "url": "https://example.com",
-  "message": "error message"
-  "errors": {
-    { error object },
-    ...
+  "body" {
+    "message": "error message",
+    "errorCount": int 0~,
+    "error": {
+      { error object },
+      ...
+    }
   }
+}
+
+// if unwraped Exeption occur
+{
+  "code": 400~500,
+  "url": "https://example.com",
+  "message": "Error message"
 }
 ```
 
@@ -68,7 +78,6 @@ MIT License
 - [ ] :gorilla: setup for JSON response when Exception thrown
 - [ ] :gorilla: prepare authenticate method
 - [ ] :gorilla: prepare login and logout method
-
 
 
 ## For me

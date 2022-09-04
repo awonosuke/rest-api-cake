@@ -51,7 +51,7 @@ class User extends Entity
      * Hash password method
      *
      * @param string $password
-     * @return void
+     * @return string|void hashed password
      */
     protected function _setPassword(string $password)
     {
