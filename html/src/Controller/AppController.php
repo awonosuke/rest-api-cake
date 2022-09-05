@@ -70,6 +70,7 @@ class AppController extends Controller
     protected function renderJson(array $response): Response
     {
         return $this->response
+            ->withStatus($response['code'])
             ->withType("application/json; charset=UTF-8")
             ->withCharset('UTF-8')
             ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
