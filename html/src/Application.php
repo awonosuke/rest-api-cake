@@ -28,11 +28,13 @@ use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 
-//use Authentication\AuthenticationService;
-//use Authentication\AuthenticationServiceInterface;
-//use Authentication\AuthenticationServiceProviderInterface;
-//use Authentication\Middleware\AuthenticationMiddleware;
-//use Psr\Http\Message\ServerRequestInterface;
+use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Identifier\IdentifierInterface;
+use Authentication\Middleware\AuthenticationMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
+
 
 /**
  * Application setup class.
@@ -41,7 +43,7 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  * want to use in your application.
  */
 class Application extends BaseApplication
-//    implements AuthenticationServiceProviderInterface
+    implements AuthenticationServiceProviderInterface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -71,7 +73,7 @@ class Application extends BaseApplication
         }
 
         // Load more plugins here
-//        $this->addPlugin('Authentication');
+        $this->addPlugin('Authentication');
     }
 
     /**
@@ -103,16 +105,16 @@ class Application extends BaseApplication
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
-            ->add(new BodyParserMiddleware());
+            ->add(new BodyParserMiddleware())
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-//            ->add(new CsrfProtectionMiddleware([
-//                'httponly' => true,
-//            ]));
+            ->add(new CsrfProtectionMiddleware([
+                'httponly' => true,
+            ]))
 
             // Add authentication middleware.
-//            ->add(new AuthenticationMiddleware($this));
+            ->add(new AuthenticationMiddleware($this));
 
         return $middlewareQueue;
     }
@@ -145,38 +147,36 @@ class Application extends BaseApplication
         // Load more plugins here
     }
 
-//    /**
-//     * サービスプロバイダのインスタンスを返す
-//     *
-//     * @param ServerRequestInterface $request
-//     * @return AuthenticationServiceInterface
-//     */
-//    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
-//    {
-//        $authenticationService = new AuthenticationService([
-//            'unauthenticatedRedirect' => '/user/login',
-//            'queryParam' => 'redirect',
+    /**
+     * サービスプロバイダのインスタンスを返す
+     *
+     * @param ServerRequestInterface $request
+     * @return AuthenticationServiceInterface
+     */
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+
+        // 認証されていないときにリダイレクトする
+//        $service->setConfig([
+//            'unauthenticatedRedirect' => false
 //        ]);
-//
-//        // 識別子をロードして、電子メールとパスワードのフィールドを確認します
-//        $authenticationService->loadIdentifier('Authentication.Password', [
-//            'fields' => [
-//                'username' => 'email',
-//                'password' => 'password',
-//            ]
-//        ]);
-//
-//        // 認証子をロードするには、最初にセッションを実行する必要があります
-//        $authenticationService->loadAuthenticator('Authentication.Session');
-//        // メールとパスワードを選択するためのフォームデータチェックの設定
-//        $authenticationService->loadAuthenticator('Authentication.Form', [
-//            'fields' => [
-//                'username' => 'email',
-//                'password' => 'password',
-//            ],
-//            'loginUrl' => '/user/login',
-//        ]);
-//
-//        return $authenticationService;
-//    }
+
+        $fields = [
+            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
+        ];
+
+        // 認証を読み込む（まずセッションを読む）
+        $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => $fields,
+            'loginUrl' => '/user/login'
+        ]);
+
+        // 識別子を読み込みます。
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
+
+        return $service;
+    }
 }
