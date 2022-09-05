@@ -122,6 +122,20 @@ class ApiExceptionRenderer extends ExceptionRenderer
     }
 
     /**
+     * 404 Not Found: Missing Controller
+     *
+     * @param $error
+     * @return \Cake\Http\Response
+     */
+    public function missingController($error): \Cake\Http\Response
+    {
+        $request_url = $this->controller->getRequest()->getRequestTarget();
+
+        $response = new Response(StatusNotFound, $request_url, (object) ['message' => 'Not found: missing controller']);
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
      * 405 Method Not Allowed
      *
      * @param $error
