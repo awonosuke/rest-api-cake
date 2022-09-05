@@ -23,7 +23,7 @@ class UsersController extends AppController
     {
         parent::beforeRender($event);
 
-//        $this->Authentication->allowUnauthenticated(['login', 'signup]);
+        $this->Authentication->allowUnauthenticated(['signupApi', 'loginApi']);
     }
 
     /**
