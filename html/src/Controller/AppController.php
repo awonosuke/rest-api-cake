@@ -59,8 +59,6 @@ class AppController extends Controller
         $this->viewBuilder()->disableAutoLayout(false);
 
         $this->autoRender = false;
-
-        $this->RequestHandler->respondAs('json', ['charset' => 'UTF-8']);
     }
 
     /**
