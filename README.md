@@ -76,8 +76,10 @@ MIT License
 - [x] :gorilla: prepare create snippet method
 - [x] :gorilla: prepare find All or A snippet method
 - [x] :gorilla: setup for JSON response when Exception thrown
-- [ ] :gorilla: prepare authenticate method
-- [ ] :gorilla: prepare login and logout method
+- [x] :gorilla: prepare authenticate method
+- [x] :gorilla: prepare login and logout method
+- [ ] :gorilla: bug fix around user authentication
+- [ ] :gorilla: add column users table and prepare admin user method
 
 
 ## For me
