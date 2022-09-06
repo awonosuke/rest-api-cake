@@ -1,5 +1,5 @@
 # rest-api-cake
-this is simple REST API with CakePHP -> snippetbox  
+this is simple REST API (JWT authentication) with CakePHP -> snippetbox  
 
 # License
 MIT License
