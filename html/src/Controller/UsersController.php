@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Error\Exception\RecordSaveErrorException;
+use App\Error\Exception\ValidationErrorException;
 use Cake\Event\EventInterface;
 use App\Library\Response;
 use Firebase\JWT\JWT;
@@ -31,14 +33,15 @@ class UsersController extends AppController
         $request_url = $this->request->getRequestTarget();
 
         $new_user = $this->Users->newEntity($this->request->getData());
+        if ($new_user->getErrors()) throw new ValidationErrorException($new_user);
+
         if ($this->Users->save($new_user)) {
             $response = new Response(StatusOK, $request_url, $new_user);
             return $this->renderJson($response->formatResponse());
         }
 
-        // 保存に失敗した場合エラー返す
-        $response = new Response(StatusBadRequest, $request_url, (object) $new_user->getErrors());
-        return $this->renderJson($response->formatResponse());
+        // 保存に失敗した時、例外を投げる
+        throw new RecordSaveErrorException();
     }
 
     /**

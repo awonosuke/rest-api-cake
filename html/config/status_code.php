@@ -12,6 +12,7 @@ const StatusUnauthorized = 401;
 const StatusForbidden = 403;
 const StatusNotFound = 404;
 const StatusMethodNotAllowed = 405;
+const StatusUnprocessableEntity = 422;
 
 // Server error
 const StatusInternalServerError = 500;

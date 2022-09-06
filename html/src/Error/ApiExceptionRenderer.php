@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Error;
 
+use App\Error\Exception\ValidationErrorException;
 use App\Library\Response;
 use Cake\Error\ExceptionRenderer;
 
@@ -34,6 +35,20 @@ class ApiExceptionRenderer extends ExceptionRenderer
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
         $response = new Response(StatusOK, $request_url, (object) ['message' => 'Record not found']);
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * 200 Failed to save record
+     *
+     * @param $error
+     * @return \Cake\Http\Response
+     */
+    public function recordSaveError($error): \Cake\Http\Response
+    {
+        $request_url = $this->controller->getRequest()->getRequestTarget();
+
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed to save record']);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -146,6 +161,20 @@ class ApiExceptionRenderer extends ExceptionRenderer
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
         $response = new Response(StatusMethodNotAllowed, $request_url, (object) ['message' => 'Method not allowed']);
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * 422 Unprocessable Entity: Validation error
+     *
+     * @param ValidationErrorException $exception
+     * @return \Cake\Http\Response
+     */
+    public function validationError(ValidationErrorException $exception): \Cake\Http\Response
+    {
+        $request_url = $this->controller->getRequest()->getRequestTarget();
+
+        $response = new Response(StatusUnprocessableEntity, $request_url, (object) $exception->getValidationErrors());
         return $this->renderJson($response->formatResponse());
     }
 
