@@ -96,6 +96,15 @@ class SnippetsTable extends Table
         return $rules;
     }
 
+    public function findExistSnippet(int $snippet_id): Query
+    {
+        $snippets = TableRegistry::getTableLocator()->get('Snippets');
+        return $snippets->find()->where([
+            'id' => $snippet_id,
+            'expire >' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+        ]);
+    }
+
     public function findAllExistSnippet(): Query
     {
         $snippets = TableRegistry::getTableLocator()->get('Snippets');
