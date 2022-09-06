@@ -5,7 +5,6 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 use App\Library\Response;
-use Cake\Http\Exception\BadRequestException;
 
 /**
  * Users Controller
@@ -14,16 +13,11 @@ use Cake\Http\Exception\BadRequestException;
  */
 class UsersController extends AppController
 {
-    public function initialize(): void
-    {
-        parent::initialize();
-    }
-
     public function beforeRender(EventInterface $event)
     {
         parent::beforeRender($event);
 
-//        $this->Authentication->allowUnauthenticated(['login', 'signup]);
+        $this->Authentication->addUnauthenticatedActions(['signupApi', 'loginApi']);
     }
 
     /**
@@ -46,31 +40,44 @@ class UsersController extends AppController
         return $this->renderJson($response->formatResponse());
     }
 
-//    public function loginApi()
-//    {
-//        $this->request->allowMethod('post');
-//
-//        $result = $this->Authentication->getResult();
-//        if ($result->isValid()) {
-//            $login_user = $this->Authentication->getIdentity();
-//            $response = new Response(200, ['id' => '']);
-//        }
-//
-//        $response = new Response(401, []);
-//    }
+    /**
+     * Login method: Authenticate user
+     *
+     * @return \Cake\Http\Response
+     */
+    public function loginApi(): \Cake\Http\Response
+    {
+        $request_url = $this->request->getRequestTarget();
 
-//    public function logoutApi()
-//    {
-//        $this->request->allowMethod('post');
-//
-//        $result = $this->Authentication->getResult();
-//        if ($result->isValid()) {
-//            $this->Authentication->logout();
-//        }
-//
-//        $response = new Response(200, 'Logout complete');
-//        return $this->renderJson($response);
-//    }
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $login_user = $this->Authentication->getIdentity();
+
+            $response = new Response(StatusOK, $request_url, $login_user);
+            return $this->renderJson($response->formatResponse());
+        }
+
+        $response = new Response(StatusUnauthorized, $request_url, (object) ['message' => 'Unauthorized']);
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * Logout method
+     *
+     * @return \Cake\Http\Response
+     */
+    public function logoutApi(): \Cake\Http\Response
+    {
+        $request_url = $this->request->getRequestTarget();
+
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $this->Authentication->logout();
+        }
+
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Logout complete']);
+        return $this->renderJson($response->formatResponse());
+    }
 
     /**
      * Resign method: Delete a user

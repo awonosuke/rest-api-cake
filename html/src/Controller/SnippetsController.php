@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Library\Response;
+use Cake\Datasource\Exception\RecordNotFoundException;
 
 /**
  * Snippets Controller
@@ -43,7 +44,8 @@ class SnippetsController extends AppController
     {
         $request_url = $this->request->getRequestTarget();
 
-        $snippet = $this->Snippets->get($snippet_id); // if snippet does not find, then throw RecordNotFoundException
+        $snippet = $this->Snippets->findExistSnippet($snippet_id)->first();
+        if (empty($snippet)) throw new RecordNotFoundException();
 
         $response = new Response(StatusOK, $request_url, $snippet);
         return $this->renderJson($response->formatResponse());

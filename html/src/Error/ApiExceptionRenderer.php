@@ -17,9 +17,24 @@ class ApiExceptionRenderer extends ExceptionRenderer
     private function renderJson(array $response): \Cake\Http\Response
     {
         return $this->controller->getResponse()
+            ->withStatus($response['code'])
             ->withType("application/json; charset=UTF-8")
             ->withCharset('UTF-8')
             ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
+    }
+
+    /**
+     * 200 Record Not Found
+     *
+     * @param $error
+     * @return \Cake\Http\Response
+     */
+    public function recordNotFound($error): \Cake\Http\Response
+    {
+        $request_url = $this->controller->getRequest()->getRequestTarget();
+
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Record not found']);
+        return $this->renderJson($response->formatResponse());
     }
 
     /**
@@ -56,11 +71,11 @@ class ApiExceptionRenderer extends ExceptionRenderer
      * @param $error
      * @return \Cake\Http\Response
      */
-    public function unauthorized($error): \Cake\Http\Response
+    public function unauthenticated($error): \Cake\Http\Response
     {
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
-        $response = new Response(StatusUnauthorized, $request_url, (object) ['message' => 'Bad request']);
+        $response = new Response(StatusUnauthorized, $request_url, (object) ['message' => 'Unauthorized']);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -74,7 +89,21 @@ class ApiExceptionRenderer extends ExceptionRenderer
     {
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
-        $response = new Response(StatusForbidden, $request_url, (object) ['message' => 'Bad request']);
+        $response = new Response(StatusForbidden, $request_url, (object) ['message' => 'Forbidden']);
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * 403 Invalid CSRF token
+     *
+     * @param $error
+     * @return \Cake\Http\Response
+     */
+    public function invalidCsrfToken($error): \Cake\Http\Response
+    {
+        $request_url = $this->controller->getRequest()->getRequestTarget();
+
+        $response = new Response(StatusForbidden, $request_url, (object) ['message' => 'Invalid CSRF token']);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -89,6 +118,20 @@ class ApiExceptionRenderer extends ExceptionRenderer
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
         $response = new Response(StatusNotFound, $request_url, (object) ['message' => 'Not found']);
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * 404 Not Found: Missing Controller
+     *
+     * @param $error
+     * @return \Cake\Http\Response
+     */
+    public function missingController($error): \Cake\Http\Response
+    {
+        $request_url = $this->controller->getRequest()->getRequestTarget();
+
+        $response = new Response(StatusNotFound, $request_url, (object) ['message' => 'Not found: missing controller']);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -121,16 +164,16 @@ class ApiExceptionRenderer extends ExceptionRenderer
     }
 
     /**
-     * 500 Record Not Found
+     * 500 Server Error
      *
      * @param $error
      * @return \Cake\Http\Response
      */
-    public function recordNotFound($error): \Cake\Http\Response
+    public function internalError($error): \Cake\Http\Response
     {
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Record not found']);
+        $response = new Response(StatusInternalServerError, $request_url, (object) ['message' => 'Internal Server `Error']);
         return $this->renderJson($response->formatResponse());
     }
 

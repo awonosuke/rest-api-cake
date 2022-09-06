@@ -44,5 +44,7 @@ class ErrorController extends AppController
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
+
+        $this->RequestHandler->respondAs('json', ['charset' => 'UTF-8']);
     }
 }
