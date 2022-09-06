@@ -164,12 +164,19 @@ class Application extends BaseApplication
 
         // 認証読み込み
         $service->loadIdentifier('Authentication.Password', compact('fields'));
-
         // 認証読み込み（セッションを優先する）
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
             'loginUrl' => Router::url('/user/login'),
+        ]);
+
+        // JWT認証
+        $service->loadIdentifier('Authentication.JwtSubject');
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
+            'algorithms' => ['RS256'],
+            'returnPayload' => false
         ]);
 
         return $service;

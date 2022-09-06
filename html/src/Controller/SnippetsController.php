@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Error\Exception\RecordSaveErrorException;
+use App\Error\Exception\ValidationErrorException;
 use App\Library\Response;
 use Cake\Datasource\Exception\RecordNotFoundException;
 
@@ -24,13 +26,15 @@ class SnippetsController extends AppController
         $request_url = $this->request->getRequestTarget();
 
         $new_snippet = $this->Snippets->newEntity($this->request->getData());
+        if ($new_snippet->getErrors()) throw new ValidationErrorException($new_snippet);
+
         if ($this->Snippets->save($new_snippet)) {
             $response = new Response(StatusOK, $request_url, $new_snippet);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusBadRequest, $request_url, (object) $new_snippet->getErrors());
-        return $this->renderJson($response->formatResponse());
+        // 保存に失敗した時、例外を投げる
+        throw new RecordSaveErrorException();
     }
 
     /**

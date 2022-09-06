@@ -1,5 +1,5 @@
 # rest-api-cake
-this is simple REST API with CakePHP -> snippetbox  
+this is simple REST API (JWT authentication) with CakePHP -> snippetbox  
 
 # License
 MIT License
@@ -78,7 +78,7 @@ MIT License
 - [x] :gorilla: setup for JSON response when Exception thrown
 - [x] :gorilla: prepare authenticate method
 - [x] :gorilla: prepare login and logout method
-- [ ] :gorilla: bug fix around user authentication
+- [x] :gorilla: bug fix around user authentication (JWT auth)
 - [ ] :gorilla: add column users table and prepare admin user method
 
 
@@ -92,23 +92,4 @@ $ docker exec -it PHP_CONTAINER_NAME bash
 # pwd
 /var/www/html
 # composer self-update && composer create-project --prefer-dist cakephp/app:4.* .
-```
-
-### how to send request for API
-`@local environment`
-```
----- GET /snippet/all ----
-$ curl -i localhost:9090/snippet/all
-
----- GET /snippet/:id ----
-$ curl -i localhost:9090/snippet/:id
-
----- POST /snippet/create ----
-$ curl -i -X POST -d 'user_id=userId' -d 'content=An old silent pond' -d 'expire=yyyy-MM-dd HH:mm:ss' localhost:9090/snippet/create
-
----- POST /user/signup ----
-$ curl -i -X POST -d 'email=awonosuke@example.com' -d 'password=awonosuke' -d 'user_name=awonosuke' localhost:9090/user/signup
-
----- POST /user/:id/resign ----
-$ curl -i -X POST localhost:9090/user/:id/resign
 ```
