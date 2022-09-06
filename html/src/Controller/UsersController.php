@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 use App\Library\Response;
+use Firebase\JWT\JWT;
 
 /**
  * Users Controller
@@ -51,9 +52,19 @@ class UsersController extends AppController
 
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
-            $login_user = $this->Authentication->getIdentity();
+            $privateKey = file_get_contents(CONFIG . '/jwt.key');
+            $login_user = $result->getData();
+            $payload = [
+                'iss' => 'rest-api',
+                'sub' => $login_user->id,
+                'exp' => time() + 60,
+            ];
 
-            $response = new Response(StatusOK, $request_url, $login_user);
+            $jwt_token = [
+                'token' => JWT::encode($payload, $privateKey, 'RS256'),
+            ];
+
+            $response = new Response(StatusOK, $request_url, (object) $jwt_token);
             return $this->renderJson($response->formatResponse());
         }
 

@@ -174,3 +174,6 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/macos,phpstorm+all,cakephp3,visualstudiocode,phpunit
 
 .env
+
+# ignore private key
+html/config/jwt.key
