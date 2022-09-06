@@ -34,7 +34,7 @@ use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
-
+use Cake\Routing\Router;
 
 /**
  * Application setup class.
@@ -109,9 +109,9 @@ class Application extends BaseApplication
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-            ->add(new CsrfProtectionMiddleware([
-                'httponly' => true,
-            ]))
+//            ->add(new CsrfProtectionMiddleware([
+//                'httponly' => true,
+//            ]))
 
             // Add authentication middleware.
             ->add(new AuthenticationMiddleware($this));
@@ -150,32 +150,27 @@ class Application extends BaseApplication
     /**
      * サービスプロバイダのインスタンスを返す
      *
-     * @param ServerRequestInterface $request
-     * @return AuthenticationServiceInterface
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authentication\AuthenticationServiceInterface
      */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();
 
-        // 認証されていないときにリダイレクトする
-//        $service->setConfig([
-//            'unauthenticatedRedirect' => false
-//        ]);
-
         $fields = [
             IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ];
 
-        // 認証を読み込む（まずセッションを読む）
+        // 認証読み込み
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
+
+        // 認証読み込み（セッションを優先する）
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => '/user/login'
+            'loginUrl' => Router::url('/user/login'),
         ]);
-
-        // 識別子を読み込みます。
-        $service->loadIdentifier('Authentication.Password', compact('fields'));
 
         return $service;
     }

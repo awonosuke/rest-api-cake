@@ -5,7 +5,6 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 use App\Library\Response;
-use Cake\Http\Exception\BadRequestException;
 
 /**
  * Users Controller
@@ -14,16 +13,11 @@ use Cake\Http\Exception\BadRequestException;
  */
 class UsersController extends AppController
 {
-    public function initialize(): void
-    {
-        parent::initialize();
-    }
-
     public function beforeRender(EventInterface $event)
     {
         parent::beforeRender($event);
 
-        $this->Authentication->allowUnauthenticated(['signupApi', 'loginApi']);
+        $this->Authentication->addUnauthenticatedActions(['signupApi', 'loginApi']);
     }
 
     /**
