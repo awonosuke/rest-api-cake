@@ -78,7 +78,7 @@ MIT License
 - [x] :gorilla: setup for JSON response when Exception thrown
 - [x] :gorilla: prepare authenticate method
 - [x] :gorilla: prepare login and logout method
-- [ ] :gorilla: bug fix around user authentication
+- [x] :gorilla: bug fix around user authentication
 - [ ] :gorilla: add column users table and prepare admin user method
 
 
