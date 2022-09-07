@@ -81,6 +81,7 @@ MIT License
 - [x] :gorilla: prepare authenticate method
 - [x] :gorilla: prepare login and logout method
 - [x] :gorilla: bug fix around user authentication (JWT auth)
+- [ ] :gorilla: update user resign method logic
 - [ ] :gorilla: add column users table and prepare admin user method
 
 
