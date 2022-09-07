@@ -96,3 +96,16 @@ $ docker exec -it PHP_CONTAINER_NAME bash
 /var/www/html
 # composer self-update && composer create-project --prefer-dist cakephp/app:4.* .
 ```
+
+### how to generate RSA private and public key
+```
+at PHP container
+# pwd
+/var/www/html
+
+---- Generate Private Key ----
+# openssl genrsa -out config/jwt.key 1024
+
+---- Generate Public Key ----
+# openssl rsa -in config/jwt.key -outform PEM -pubout -out config/jwt.pem
+```
