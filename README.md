@@ -83,6 +83,8 @@ MIT License
 - [x] :gorilla: bug fix around user authentication (JWT auth)
 - [x] :gorilla: fix user resign method logic
 - [x] :gorilla: fix snippet method logic
+- [ ] :gorilla: fix bug `ValidationErrorException`
+- [ ] :gorilla: redesign JSON response structure
 - [ ] :gorilla: add column users table and prepare admin user method
 
 
