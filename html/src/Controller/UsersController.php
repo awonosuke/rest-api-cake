@@ -5,8 +5,10 @@ namespace App\Controller;
 
 use App\Error\Exception\RecordSaveErrorException;
 use App\Error\Exception\ValidationErrorException;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
 use App\Library\Response;
+use Cake\Http\Exception\ForbiddenException;
 use Firebase\JWT\JWT;
 
 /**
@@ -56,7 +58,7 @@ class UsersController extends AppController
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
             $privateKey = file_get_contents(CONFIG . '/jwt.key');
-            $login_user = $result->getData();
+            $login_user = $result->getData('id');
             $payload = [
                 'iss' => 'rest-api',
                 'sub' => $login_user->id,
@@ -96,14 +98,19 @@ class UsersController extends AppController
     /**
      * Resign method: Delete a user
      *
-     * @param int $user_id
+     * @param int $target_user_id
      * @return \Cake\Http\Response
      */
-    public function resignApi(int $user_id): \Cake\Http\Response
+    public function resignApi(int $target_user_id): \Cake\Http\Response
     {
         $request_url = $this->request->getRequestTarget();
 
-        $user = $this->Users->get($user_id); // if user does not find, then throw RecordNotFoundException
+        // 対象ユーザーとログインユーザーが一致するか判定
+        if ($this->isMatchTargetAndLoginUser($target_user_id)) throw new ForbiddenException();
+
+        $user = $this->Users->find()->where(['id' => $target_user_id])->first();
+        if (empty($user)) throw new RecordNotFoundException();
+
         if ($this->Users->delete($user)) {
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Resign snippetbox']);
             return $this->renderJson($response->formatResponse());
@@ -111,5 +118,17 @@ class UsersController extends AppController
 
         $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed resign snippetbox']);
         return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * Identification method: Compare target user id and login user id
+     *
+     * @param int $target_user_id
+     * @return bool
+     */
+    private function isMatchTargetAndLoginUser(int $target_user_id): bool
+    {
+        $login_user = $this->Authentication->getResult()->getData();
+        return $target_user_id === $login_user['id'];
     }
 }

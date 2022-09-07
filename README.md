@@ -27,7 +27,9 @@ MIT License
 - `403`: Forbidden
 - `404`: Not Found
 - `405`: Method Not Allowed
-- `500`: Sever Error
+- `422`: Unprocessable Entity
+- `5XX`: Server Error
+- `500`: Server Error
 
 
 ## JSON response format
@@ -79,6 +81,7 @@ MIT License
 - [x] :gorilla: prepare authenticate method
 - [x] :gorilla: prepare login and logout method
 - [x] :gorilla: bug fix around user authentication (JWT auth)
+- [ ] :gorilla: update user resign method logic
 - [ ] :gorilla: add column users table and prepare admin user method
 
 
@@ -92,4 +95,17 @@ $ docker exec -it PHP_CONTAINER_NAME bash
 # pwd
 /var/www/html
 # composer self-update && composer create-project --prefer-dist cakephp/app:4.* .
+```
+
+### how to generate RSA private and public key
+```
+at PHP container
+# pwd
+/var/www/html
+
+---- Generate Private Key ----
+# openssl genrsa -out config/jwt.key 1024
+
+---- Generate Public Key ----
+# openssl rsa -in config/jwt.key -outform PEM -pubout -out config/jwt.pem
 ```
