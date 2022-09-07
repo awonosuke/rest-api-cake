@@ -27,7 +27,9 @@ MIT License
 - `403`: Forbidden
 - `404`: Not Found
 - `405`: Method Not Allowed
-- `500`: Sever Error
+- `422`: Unprocessable Entity
+- `5XX`: Server Error
+- `500`: Server Error
 
 
 ## JSON response format
