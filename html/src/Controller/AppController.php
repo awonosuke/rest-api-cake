@@ -16,9 +16,12 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
+use Cake\Event\EventManagerInterface;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 
 /**
  * Application Controller
@@ -30,6 +33,15 @@ use Cake\Http\Response;
  */
 class AppController extends Controller
 {
+    protected $loginUser;
+
+    public function __construct(?ServerRequest $request = null, ?Response $response = null, ?string $name = null, ?EventManagerInterface $eventManager = null, ?ComponentRegistry $components = null)
+    {
+        parent::__construct($request, $response, $name, $eventManager, $components);
+
+        $this->loginUser = $this->Authentication->getResult()->getData();
+    }
+
     /**
      * Initialization hook method.
      *

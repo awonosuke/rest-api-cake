@@ -103,10 +103,10 @@ class UsersController extends AppController
      */
     public function resignApi(int $target_user_id): \Cake\Http\Response
     {
-        $request_url = $this->request->getRequestTarget();
+        // 対象ユーザーとログインユーザーが一致するかチェック
+        if ($this->isMatchTargetAndLoginUser($target_user_id) === false) throw new ForbiddenException();
 
-        // 対象ユーザーとログインユーザーが一致するか判定
-        if ($this->isMatchTargetAndLoginUser($target_user_id)) throw new ForbiddenException();
+        $request_url = $this->request->getRequestTarget();
 
         $user = $this->Users->find()->where(['id' => $target_user_id])->first();
         if (empty($user)) throw new RecordNotFoundException();
@@ -128,7 +128,6 @@ class UsersController extends AppController
      */
     private function isMatchTargetAndLoginUser(int $target_user_id): bool
     {
-        $login_user = $this->Authentication->getResult()->getData();
-        return $target_user_id === $login_user['id'];
+        return $target_user_id === $this->loginUser['id'];
     }
 }
