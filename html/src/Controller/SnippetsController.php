@@ -25,7 +25,8 @@ class SnippetsController extends AppController
     {
         $request_url = $this->request->getRequestTarget();
 
-        $new_snippet = $this->Snippets->newEntity($this->request->getData());
+        $snippet_replica = array_merge(['user_id' => $this->loginUser['id']], $this->request->getData());
+        $new_snippet = $this->Snippets->newEntity($snippet_replica);
         if ($new_snippet->getErrors()) throw new ValidationErrorException($new_snippet);
 
         if ($this->Snippets->save($new_snippet)) {
@@ -48,7 +49,7 @@ class SnippetsController extends AppController
     {
         $request_url = $this->request->getRequestTarget();
 
-        $snippet = $this->Snippets->findExistSnippet($snippet_id)->first();
+        $snippet = $this->Snippets->findExistSnippet($snippet_id, $this->loginUser['id'])->first();
         if (empty($snippet)) throw new RecordNotFoundException();
 
         $response = new Response(StatusOK, $request_url, $snippet);
@@ -65,7 +66,7 @@ class SnippetsController extends AppController
     {
         $request_url = $this->request->getRequestTarget();
 
-        $all_snippet = $this->Snippets->findAllExistSnippet();
+        $all_snippet = $this->Snippets->findAllExistSnippet($this->loginUser['id']);
         if (empty($all_snippet)) {
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
@@ -85,13 +86,13 @@ class SnippetsController extends AppController
     {
         $request_url = $this->request->getRequestTarget();
 
-        $all_expire_snippet = $this->Snippets->findAllExpiredSnippet();
-        if (empty($all_expire_snippet)) {
+        $all_expired_snippet = $this->Snippets->findAllExpiredSnippet($this->loginUser['id']);
+        if (empty($all_expired_snippet)) {
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Expired Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, $all_expire_snippet);
+        $response = new Response(StatusOK, $request_url, $all_expired_snippet);
         return $this->renderJson($response->formatResponse());
     }
 }
