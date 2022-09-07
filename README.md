@@ -6,16 +6,16 @@ MIT License
 
 
 ## End point
-| Method | Pattern            | Action                                    |
-|:-------|:-------------------|:------------------------------------------|
-| `GET`  | `/snippet/all`     | Return all snippet                        |
-| `GET`  | `/snippet/:id`     | Return a specific snippet                 |
-| `POST` | `/snippet/create`  | Create a new snippet                      |
-| `POST` | `/user/signup`     | Create a new user                         |
-| `POST` | `/user/login`      | Authenticate and login the user           |
-| `POST` | `/user/logout`     | Logout the user                           |
-| `POST` | `/user/:id/resign` | Resign from snippetbox                    |                                          |
-| `GET`  | `/admin`           | Return all user data with user's snippets |
+| Method | Pattern           | Action                                    |
+|:-------|:------------------|:------------------------------------------|
+| `GET`  | `/snippet/all`    | Return all snippet                        |
+| `GET`  | `/snippet/:id`    | Return a specific snippet                 |
+| `POST` | `/snippet/create` | Create a new snippet                      |
+| `POST` | `/user/signup`    | Create a new user                         |
+| `POST` | `/user/login`     | Authenticate and login the user           |
+| `POST` | `/user/logout`    | Logout the user                           |
+| `POST` | `/user/resign`    | Resign from snippetbox                    |                                          |
+| `GET`  | `/admin`          | Return all user data with user's snippets |
 
 
 ## Status Code
@@ -81,7 +81,8 @@ MIT License
 - [x] :gorilla: prepare authenticate method
 - [x] :gorilla: prepare login and logout method
 - [x] :gorilla: bug fix around user authentication (JWT auth)
-- [ ] :gorilla: update user resign method logic
+- [x] :gorilla: fix user resign method logic
+- [x] :gorilla: fix snippet method logic
 - [ ] :gorilla: add column users table and prepare admin user method
 
 

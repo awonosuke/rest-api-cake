@@ -8,7 +8,6 @@ use App\Error\Exception\ValidationErrorException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
 use App\Library\Response;
-use Cake\Http\Exception\ForbiddenException;
 use Firebase\JWT\JWT;
 
 /**
@@ -58,18 +57,15 @@ class UsersController extends AppController
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
             $privateKey = file_get_contents(CONFIG . '/jwt.key');
-            $login_user = $result->getData('id');
             $payload = [
                 'iss' => 'rest-api',
-                'sub' => $login_user->id,
+                'sub' => $this->loginUser['id'],
                 'exp' => time() + 60,
             ];
 
-            $jwt_token = [
-                'token' => JWT::encode($payload, $privateKey, 'RS256'),
-            ];
+            $jwt_token = JWT::encode($payload, $privateKey, 'RS256');
 
-            $response = new Response(StatusOK, $request_url, (object) $jwt_token);
+            $response = new Response(StatusOK, $request_url, (object) ['token' => $jwt_token]);
             return $this->renderJson($response->formatResponse());
         }
 
@@ -98,17 +94,13 @@ class UsersController extends AppController
     /**
      * Resign method: Delete a user
      *
-     * @param int $target_user_id
      * @return \Cake\Http\Response
      */
-    public function resignApi(int $target_user_id): \Cake\Http\Response
+    public function resignApi(): \Cake\Http\Response
     {
         $request_url = $this->request->getRequestTarget();
 
-        // 対象ユーザーとログインユーザーが一致するか判定
-        if ($this->isMatchTargetAndLoginUser($target_user_id)) throw new ForbiddenException();
-
-        $user = $this->Users->find()->where(['id' => $target_user_id])->first();
+        $user = $this->Users->find()->where(['id' => $this->loginUser['id']])->first();
         if (empty($user)) throw new RecordNotFoundException();
 
         if ($this->Users->delete($user)) {
@@ -118,17 +110,5 @@ class UsersController extends AppController
 
         $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed resign snippetbox']);
         return $this->renderJson($response->formatResponse());
-    }
-
-    /**
-     * Identification method: Compare target user id and login user id
-     *
-     * @param int $target_user_id
-     * @return bool
-     */
-    private function isMatchTargetAndLoginUser(int $target_user_id): bool
-    {
-        $login_user = $this->Authentication->getResult()->getData();
-        return $target_user_id === $login_user['id'];
     }
 }
