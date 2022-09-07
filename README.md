@@ -6,16 +6,16 @@ MIT License
 
 
 ## End point
-| Method | Pattern            | Action                                    |
-|:-------|:-------------------|:------------------------------------------|
-| `GET`  | `/snippet/all`     | Return all snippet                        |
-| `GET`  | `/snippet/:id`     | Return a specific snippet                 |
-| `POST` | `/snippet/create`  | Create a new snippet                      |
-| `POST` | `/user/signup`     | Create a new user                         |
-| `POST` | `/user/login`      | Authenticate and login the user           |
-| `POST` | `/user/logout`     | Logout the user                           |
-| `POST` | `/user/:id/resign` | Resign from snippetbox                    |                                          |
-| `GET`  | `/admin`           | Return all user data with user's snippets |
+| Method | Pattern           | Action                                    |
+|:-------|:------------------|:------------------------------------------|
+| `GET`  | `/snippet/all`    | Return all snippet                        |
+| `GET`  | `/snippet/:id`    | Return a specific snippet                 |
+| `POST` | `/snippet/create` | Create a new snippet                      |
+| `POST` | `/user/signup`    | Create a new user                         |
+| `POST` | `/user/login`     | Authenticate and login the user           |
+| `POST` | `/user/logout`    | Logout the user                           |
+| `POST` | `/user/resign`    | Resign from snippetbox                    |                                          |
+| `GET`  | `/admin`          | Return all user data with user's snippets |
 
 
 ## Status Code
