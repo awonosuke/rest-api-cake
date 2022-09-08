@@ -84,8 +84,9 @@ MIT License
 - [x] :gorilla: fix user resign method logic
 - [x] :gorilla: fix snippet method logic
 - [x] :gorilla: bug fix `ValidationErrorException`
-- [ ] :gorilla: redesign JSON response structure
+- [x] :gorilla: redesign JSON response structure
 - [ ] :gorilla: add column users table and prepare admin user method
+- [ ] :gorilla: prepare test method
 
 
 ## For me
