@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Error\Exception;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\HttpException;
 
 class ValidationErrorException extends HttpException
