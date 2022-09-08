@@ -5,6 +5,7 @@ CREATE TABLE users (
     email varchar(255) NOT NULL UNIQUE COMMENT 'as user ID',
     password varchar(255) NOT NULL,
     user_name varchar(255) NOT NULL,
+    role varchar(255) NOT NULL DEFAULT 'user',
     created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
