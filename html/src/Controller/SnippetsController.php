@@ -30,7 +30,7 @@ class SnippetsController extends AppController
         if ($new_snippet->getErrors()) throw new ValidationErrorException($new_snippet);
 
         if ($this->Snippets->save($new_snippet)) {
-            $response = new Response(StatusOK, $request_url, $new_snippet);
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Create a new snippet', 'snippet' => $this->removeUserIdFromSnippet($new_snippet)]);
             return $this->renderJson($response->formatResponse());
         }
 
@@ -52,8 +52,22 @@ class SnippetsController extends AppController
         $snippet = $this->Snippets->findExistSnippet($snippet_id, $this->loginUser['id'])->first();
         if (empty($snippet)) throw new RecordNotFoundException();
 
-        $response = new Response(StatusOK, $request_url, $snippet);
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get a snippet', 'snippet' => $this->removeUserIdFromSnippet($snippet)]);
         return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * @param object $snippet
+     * @return object
+     */
+    private function removeUserIdFromSnippet(object $snippet): object
+    {
+        return (object) array(
+            'id' => $snippet->id,
+            'content' => $snippet->content,
+            'expire' => $snippet->expire,
+            'created' => $snippet->created,
+        );
     }
 
     /**
@@ -72,7 +86,7 @@ class SnippetsController extends AppController
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, $all_snippet);
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all snippet', 'snippet' => $this->formatBodyWithSnippet($all_snippet)]);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -92,7 +106,27 @@ class SnippetsController extends AppController
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, $all_expired_snippet);
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all expired snippet', 'snippet' => $this->formatBodyWithSnippet($all_expired_snippet)]);
         return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * Remove user id property from snippet object
+     *
+     * @param object $snippets
+     * @return array
+     */
+    private function formatBodyWithSnippet(object $snippets): array
+    {
+        $body = array();
+        foreach ($snippets as $snippet) {
+            $body[] = array(
+                'id' => $snippet->id,
+                'content' => $snippet->content,
+                'expire' => $snippet->expire,
+                'created' => $snippet->created,
+            );
+        }
+        return $body;
     }
 }
