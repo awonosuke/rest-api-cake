@@ -78,6 +78,11 @@ class UsersTable extends Table
             ->requirePresence('user_name', 'create')
             ->notEmptyString('user_name');
 
+        $validator
+            ->scalar('role')
+            ->maxLength('role', 255)
+            ->allowEmptyString('role');
+
         return $validator;
     }
 

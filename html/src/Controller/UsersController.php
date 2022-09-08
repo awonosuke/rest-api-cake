@@ -37,7 +37,8 @@ class UsersController extends AppController
         if ($new_user->getErrors()) throw new ValidationErrorException($new_user);
 
         if ($this->Users->save($new_user)) {
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Signup complete', 'user' => $new_user]);
+            $signup_user = $this->Users->get($new_user->id); // throw new RecordNotFoundException
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Signup complete', 'user' => $signup_user]);
             return $this->renderJson($response->formatResponse());
         }
 

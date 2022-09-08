@@ -28,10 +28,7 @@ class Snippet extends Entity
      * @var array<string, bool>
      */
     protected $_accessible = [
-        'user_id' => true,
-        'content' => true,
-        'expire' => true,
-        'created' => true,
-        'user' => true,
+        '*' => true,
+        'id' => true,
     ];
 }
