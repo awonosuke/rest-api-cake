@@ -37,7 +37,7 @@ class UsersController extends AppController
         if ($new_user->getErrors()) throw new ValidationErrorException($new_user);
 
         if ($this->Users->save($new_user)) {
-            $response = new Response(StatusOK, $request_url, $new_user);
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Signup complete', 'user' => $new_user]);
             return $this->renderJson($response->formatResponse());
         }
 
@@ -65,7 +65,7 @@ class UsersController extends AppController
 
             $jwt_token = JWT::encode($payload, $privateKey, 'RS256');
 
-            $response = new Response(StatusOK, $request_url, (object) ['token' => $jwt_token]);
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Login complete', 'token' => $jwt_token]);
             return $this->renderJson($response->formatResponse());
         }
 
