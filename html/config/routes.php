@@ -58,6 +58,9 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/snippet/{snippetId}', ['controller' => 'Snippets', 'action' => 'getSnippetApi'])->setPatterns(['snippetId' => '[0-9]+'])->setPass(['snippetId'])->setMethods(['GET']);
         $builder->connect('/snippet/create', ['controller' => 'Snippets', 'action' => 'createSnippetApi'])->setMethods(['POST']);
 
+        // admin routing
+        $builder->connect('/admin/user/all', ['controller' => 'Admin', 'action' => 'allUserApi'])->setMethods(['GET']);
+
         $builder->fallbacks();
     });
 };
