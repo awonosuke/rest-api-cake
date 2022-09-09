@@ -6,17 +6,19 @@ MIT License
 
 
 ## End point
-| Method | Pattern           | Action                                    |
-|:-------|:------------------|:------------------------------------------|
-| `GET`  | `/snippet/all`    | Return all snippet                        |
-| `GET`  | `/snippet/:id`    | Return a specific snippet                 |
-| `POST` | `/snippet/create` | Create a new snippet                      |
-| `POST` | `/user/signup`    | Create a new user                         |
-| `POST` | `/user/login`     | Authenticate and login the user           |
-| `POST` | `/user/logout`    | Logout the user                           |
-| `POST` | `/user/resign`    | Resign from snippetbox                    |                                          |
-| `GET`  | `/admin`          | Return all user data with user's snippets |
-
+| Method | Pattern                                   | Action                            |
+|:-------|:------------------------------------------|:----------------------------------|
+| `GET`  | `/snippet/all`                            | Return all snippet                |
+| `GET`  | `/snippet/:snippetId`                     | Return a specific snippet         |
+| `POST` | `/snippet/create`                         | Create a new snippet              |
+| `POST` | `/user/signup`                            | Create a new user                 |
+| `POST` | `/user/login`                             | Authenticate and login the user   |
+| `POST` | `/user/logout`                            | Logout the user                   |
+| `POST` | `/user/resign`                            | Resign from snippetbox            |                                          |
+| `GET`  | `/admin/user/all`                         | Return all user data              |
+| `POST` | `/admin/user/forced-resign/:userId`       | Forced resign a normal user       |
+| `POST` | `/admin/user/make-admin/:userId`          | Change a user role as `admin`     |
+| `POST` | `/admin/snippet/forced-delete/:snippetId` | Forced delete a someone's snippet |
 
 ## Status Code
 
@@ -29,7 +31,7 @@ MIT License
 - `405`: Method Not Allowed
 - `422`: Unprocessable Entity
 - `5XX`: Server Error
-- `500`: Server Error
+- `500`: Internal Server Error
 
 
 ## JSON response format
@@ -61,7 +63,7 @@ MIT License
   }
 }
 
-// if unwraped Exception occur
+// if unwraped Exception is thrown
 {
   "code": 400~500,
   "url": "https://example.com",
@@ -85,8 +87,11 @@ MIT License
 - [x] :gorilla: fix snippet method logic
 - [x] :gorilla: bug fix `ValidationErrorException`
 - [x] :gorilla: redesign JSON response structure
-- [ ] :gorilla: add column users table and prepare admin user method
-- [ ] :gorilla: prepare test method
+- [x] :gorilla: add column users table and prepare admin user method
+- [ ] :gorilla: prepare forced resign method
+- [ ] :gorilla: prepare make admin user method
+- [ ] :gorilla: prepare forced delete snippet method
+- [ ] :gorilla: prepare test cases
 
 
 ## For me
