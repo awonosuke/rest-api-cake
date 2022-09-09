@@ -90,6 +90,7 @@ MIT License
 - [x] :gorilla: add column users table and prepare admin user method
 - [ ] :gorilla: prepare forced resign method
 - [ ] :gorilla: prepare make admin user method
+- [ ] :gorilla: prepare forced delete snippet method
 - [ ] :gorilla: prepare test cases
 
 
