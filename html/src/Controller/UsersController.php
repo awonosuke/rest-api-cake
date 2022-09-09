@@ -17,11 +17,11 @@ use Firebase\JWT\JWT;
  */
 class UsersController extends AppController
 {
-    public function beforeRender(EventInterface $event)
+    public function beforeFilter(EventInterface $event)
     {
-        parent::beforeRender($event);
+        parent::beforeFilter($event);
 
-        $this->Authentication->addUnauthenticatedActions(['signupApi', 'loginApi']);
+        $this->Authentication->allowUnauthenticated(['signupApi', 'loginApi']);
     }
 
     /**
