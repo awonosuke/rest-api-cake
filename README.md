@@ -29,7 +29,7 @@ MIT License
 - `405`: Method Not Allowed
 - `422`: Unprocessable Entity
 - `5XX`: Server Error
-- `500`: Server Error
+- `500`: Internal Server Error
 
 
 ## JSON response format
@@ -61,7 +61,7 @@ MIT License
   }
 }
 
-// if unwraped Exception occur
+// if unwraped Exception is thrown
 {
   "code": 400~500,
   "url": "https://example.com",
