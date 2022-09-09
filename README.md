@@ -15,7 +15,7 @@ MIT License
 | `POST` | `/user/login`     | Authenticate and login the user           |
 | `POST` | `/user/logout`    | Logout the user                           |
 | `POST` | `/user/resign`    | Resign from snippetbox                    |                                          |
-| `GET`  | `/admin`          | Return all user data with user's snippets |
+| `GET`  | `/admin/user/all` | Return all user data with user's snippets |
 
 
 ## Status Code
