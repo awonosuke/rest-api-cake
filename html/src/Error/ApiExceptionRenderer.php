@@ -10,6 +10,7 @@ use App\Error\Exception\RecordSaveErrorException;
 use App\Error\Exception\ValidationErrorException;
 use App\Library\Response;
 use Cake\Error\ExceptionRenderer;
+use Cake\Http\Exception\MethodNotAllowedException;
 
 class ApiExceptionRenderer extends ExceptionRenderer
 {
@@ -168,17 +169,36 @@ class ApiExceptionRenderer extends ExceptionRenderer
     }
 
     /**
-     * 405 Method Not Allowed
+     * 404 Not Found: Missing Action
      *
      * @param $exception
      * @return \Cake\Http\Response
      */
-    public function methodNotAllowed($exception): \Cake\Http\Response
+    public function missingAction($exception): \Cake\Http\Response
     {
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
-        $response = $this->normalExceptionResponse(StatusMethodNotAllowed, $request_url, 'Method Not Allowed');
+        $response = $this->normalExceptionResponse(StatusNotFound, $request_url, 'Not Found: Missing Action');
         return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * 405 Method Not Allowed
+     *
+     * @param MethodNotAllowedException $exception
+     * @return \Cake\Http\Response
+     */
+    public function methodNotAllowed(MethodNotAllowedException $exception): \Cake\Http\Response
+    {
+        $request_url = $this->controller->getRequest()->getRequestTarget();
+
+        $response = $this->normalExceptionResponse(StatusMethodNotAllowed, $request_url, 'Method Not Allowed')->formatResponse();
+        return $this->controller->getResponse()
+            ->withStatus($response['code'])
+            ->withType("application/json; charset=UTF-8")
+            ->withCharset('UTF-8')
+            ->withHeader('Allow', $exception->getMessage())
+            ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
     }
 
     /**
