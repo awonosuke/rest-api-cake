@@ -37,7 +37,11 @@ class UsersController extends AppController
 
         $request_url = $this->request->getRequestTarget();
 
-        $new_user = $this->Users->newEntity($this->request->getData());
+        $post_data = $this->request->getData();
+        // 新規ユーザー登録で管理者ユーザーは作らせない（強制的に一般ユーザーにする）
+        $post_data['role'] = 'user';
+
+        $new_user = $this->Users->newEntity($post_data);
         if ($new_user->getErrors()) throw new ValidationErrorException($new_user);
 
         if ($this->Users->save($new_user)) {

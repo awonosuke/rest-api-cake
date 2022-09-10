@@ -16,8 +16,8 @@ MIT License
 | `POST` | `/user/logout`                            | Logout the user                   |
 | `POST` | `/user/resign`                            | Resign from snippetbox            |                                          |
 | `GET`  | `/admin/user/all`                         | Return all user data              |
-| `POST` | `/admin/user/forced-resign/:userId`       | Forced resign a normal user       |
 | `POST` | `/admin/user/make-admin/:userId`          | Change a user role as `admin`     |
+| `POST` | `/admin/user/forced-resign/:userId`       | Forced resign a normal user       |
 | `POST` | `/admin/snippet/forced-delete/:snippetId` | Forced delete a someone's snippet |
 
 ## Status Code
@@ -87,10 +87,9 @@ MIT License
 - [x] :gorilla: fix snippet method logic
 - [x] :gorilla: bug fix `ValidationErrorException`
 - [x] :gorilla: redesign JSON response structure
-- [x] :gorilla: add column users table and prepare admin user method
-- [ ] :gorilla: prepare forced resign method
-- [ ] :gorilla: prepare make admin user method
-- [ ] :gorilla: prepare forced delete snippet method
+- [x] :gorilla: add column users table
+- [x] :gorilla: prepare admin user method (forced resign user, make admin, forced delete snippet)
+- [ ] :gorilla: prepare utility method and replace exception as error response
 - [ ] :gorilla: prepare test cases
 
 
