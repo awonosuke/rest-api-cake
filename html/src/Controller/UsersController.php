@@ -76,11 +76,10 @@ class UsersController extends AppController
             $payload = [
                 'iss' => 'rest-api-cake',
                 'sub' => $this->loginUser['id'],
-                'exp' => time() + JWT_EXPIRES // token expires in 1 hour
+                'exp' => time() + JWT_EXPIRES // token expires in 1 day
             ];
-
             $jwt_token = JWT::encode($payload, $privateKey, JWT_ALG);
-
+            
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Login complete', 'token' => $jwt_token]);
             return $this->renderJson($response->formatResponse());
         }
