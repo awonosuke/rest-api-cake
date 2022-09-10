@@ -68,14 +68,14 @@ class UsersController extends AppController
 
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
-            $privateKey = file_get_contents(CONFIG . '/jwt.key');
+            $privateKey = file_get_contents(PRIVATE_KEY_PATH);
             $payload = [
                 'iss' => 'rest-api-cake',
                 'sub' => $this->loginUser['id'],
-                'exp' => time() + 3600 // now + 1 hour
+                'exp' => time() + JWT_EXPIRES // token expires in 1 hour
             ];
 
-            $jwt_token = JWT::encode($payload, $privateKey, 'RS256');
+            $jwt_token = JWT::encode($payload, $privateKey, JWT_ALG);
 
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Login complete', 'token' => $jwt_token]);
             return $this->renderJson($response->formatResponse());

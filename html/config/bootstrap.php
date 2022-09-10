@@ -82,6 +82,7 @@ try {
 
     Configure::load('status_code');
     Configure::load('endpoint_http_method');
+    Configure::load('jwt_authentication');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
