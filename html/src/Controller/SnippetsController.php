@@ -7,6 +7,7 @@ use App\Error\Exception\RecordSaveErrorException;
 use App\Error\Exception\ValidationErrorException;
 use App\Library\Response;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\MethodNotAllowedException;
 
 /**
  * Snippets Controller
@@ -23,6 +24,8 @@ class SnippetsController extends AppController
      */
     public function createSnippetApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
+
         $request_url = $this->request->getRequestTarget();
 
         $snippet_replica = array_merge(['user_id' => $this->loginUser['id']], $this->request->getData());
@@ -39,24 +42,6 @@ class SnippetsController extends AppController
     }
 
     /**
-     * Get method: Select a snippet
-     *
-     * @param int $snippet_id
-     * @return \Cake\Http\Response
-     * @throws \Exception
-     */
-    public function getSnippetApi(int $snippet_id): \Cake\Http\Response
-    {
-        $request_url = $this->request->getRequestTarget();
-
-        $snippet = $this->Snippets->findExistSnippet($snippet_id, $this->loginUser['id'])->first();
-        if (empty($snippet)) throw new RecordNotFoundException();
-
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get a snippet', 'snippet' => $this->removeUserIdFromSnippet($snippet)]);
-        return $this->renderJson($response->formatResponse());
-    }
-
-    /**
      * @param object $snippet
      * @return object
      */
@@ -66,8 +51,28 @@ class SnippetsController extends AppController
             'id' => $snippet->id,
             'content' => $snippet->content,
             'expire' => $snippet->expire,
-            'created' => $snippet->created,
+            'created' => $snippet->created
         );
+    }
+
+    /**
+     * Get method: Select a snippet
+     *
+     * @param int $snippet_id
+     * @return \Cake\Http\Response
+     * @throws \Exception
+     */
+    public function getSnippetApi(int $snippet_id): \Cake\Http\Response
+    {
+        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
+
+        $request_url = $this->request->getRequestTarget();
+
+        $snippet = $this->Snippets->findExistSnippet($snippet_id, $this->loginUser['id'])->first();
+        if (empty($snippet)) throw new RecordNotFoundException();
+
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get a snippet', 'snippet' => $snippet]);
+        return $this->renderJson($response->formatResponse());
     }
 
     /**
@@ -78,6 +83,8 @@ class SnippetsController extends AppController
      */
     public function allSnippetApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
+
         $request_url = $this->request->getRequestTarget();
 
         $all_snippet = $this->Snippets->findAllExistSnippet($this->loginUser['id']);
@@ -86,7 +93,7 @@ class SnippetsController extends AppController
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all snippet', 'snippet' => $this->formatBodyWithSnippet($all_snippet)]);
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all snippet', 'snippet' => $all_snippet]);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -98,6 +105,8 @@ class SnippetsController extends AppController
      */
     public function allExpiredSnippetApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
+
         $request_url = $this->request->getRequestTarget();
 
         $all_expired_snippet = $this->Snippets->findAllExpiredSnippet($this->loginUser['id']);
@@ -106,27 +115,7 @@ class SnippetsController extends AppController
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all expired snippet', 'snippet' => $this->formatBodyWithSnippet($all_expired_snippet)]);
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all expired snippet', 'snippet' => $all_expired_snippet]);
         return $this->renderJson($response->formatResponse());
-    }
-
-    /**
-     * Remove user id property from snippet object
-     *
-     * @param object $snippets
-     * @return array
-     */
-    private function formatBodyWithSnippet(object $snippets): array
-    {
-        $body = array();
-        foreach ($snippets as $snippet) {
-            $body[] = array(
-                'id' => $snippet->id,
-                'content' => $snippet->content,
-                'expire' => $snippet->expire,
-                'created' => $snippet->created,
-            );
-        }
-        return $body;
     }
 }

@@ -162,21 +162,23 @@ class Application extends BaseApplication
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ];
 
-        // 認証読み込み
+        // 識別子の読み込み(JWT、フォーム)
+        $service->loadIdentifier('Authentication.JwtSubject');
         $service->loadIdentifier('Authentication.Password', compact('fields'));
-        // 認証読み込み（セッションを優先する）
+
+        // 認証子の読み込み ※JWTを優先
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'secretKey' => file_get_contents(PUBLIC_KEY_PATH),
+            'algorithms' => [JWT_ALG],
+            'header' => 'Authorization',
+            'queryParam' => 'token',
+            'tokenPrefix' => 'bearer',
+            'returnPayload' => false
+        ]);
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => Router::url('/user/login'),
-        ]);
-
-        // JWT認証
-        $service->loadIdentifier('Authentication.JwtSubject');
-        $service->loadAuthenticator('Authentication.Jwt', [
-            'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
-            'algorithms' => ['RS256'],
-            'returnPayload' => false
+            'loginUrl' => Router::url('/user/login')
         ]);
 
         return $service;

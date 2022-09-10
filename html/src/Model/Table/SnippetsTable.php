@@ -106,11 +106,13 @@ class SnippetsTable extends Table
     public function findExistSnippet(int $snippet_id, int $user_id): Query
     {
         $snippets = TableRegistry::getTableLocator()->get('Snippets');
-        return $snippets->find()->where([
-            'id' => $snippet_id,
-            'user_id' => $user_id,
-            'expire >' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
-        ]);
+        return $snippets->find()
+            ->select(['id', 'content', 'expire', 'created'])
+            ->where([
+                'id' => $snippet_id,
+                'user_id' => $user_id,
+                'expire >' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+            ]);
     }
 
     /**
@@ -122,10 +124,12 @@ class SnippetsTable extends Table
     public function findAllExistSnippet(int $user_id): Query
     {
         $snippets = TableRegistry::getTableLocator()->get('Snippets');
-        return $snippets->find()->where([
-            'user_id' => $user_id,
-            'expire >' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
-        ]);
+        return $snippets->find()
+            ->select(['id', 'content', 'expire', 'created'])
+            ->where([
+                'user_id' => $user_id,
+                'expire >' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+            ]);
     }
 
     /**
@@ -137,9 +141,11 @@ class SnippetsTable extends Table
     public function findAllExpiredSnippet(int $user_id): Query
     {
         $snippets = TableRegistry::getTableLocator()->get('Snippets');
-        return $snippets->find()->where([
-            'user_id' => $user_id,
-            'expire <=' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
-        ]);
+        return $snippets->find()
+            ->select(['id', 'content', 'expire', 'created'])
+            ->where([
+                'user_id' => $user_id,
+                'expire <=' => FrozenTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss')
+            ]);
     }
 }

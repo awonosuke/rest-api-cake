@@ -8,6 +8,8 @@ use App\Error\Exception\ValidationErrorException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
 use App\Library\Response;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Firebase\JWT\JWT;
 
 /**
@@ -31,13 +33,20 @@ class UsersController extends AppController
      */
     public function signupApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
+
         $request_url = $this->request->getRequestTarget();
 
         $new_user = $this->Users->newEntity($this->request->getData());
         if ($new_user->getErrors()) throw new ValidationErrorException($new_user);
 
         if ($this->Users->save($new_user)) {
-            $signup_user = $this->Users->get($new_user->id); // throw new RecordNotFoundException
+            $signup_user = $this->Users->find()
+                ->select(['id', 'email', 'user_name', 'created'])
+                ->where(['id' => $new_user->id])
+                ->first();
+            if (empty($signup_user)) throw new RecordNotFoundException();
+
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Signup complete', 'user' => $signup_user]);
             return $this->renderJson($response->formatResponse());
         }
@@ -53,18 +62,20 @@ class UsersController extends AppController
      */
     public function loginApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
+
         $request_url = $this->request->getRequestTarget();
 
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
-            $privateKey = file_get_contents(CONFIG . '/jwt.key');
+            $privateKey = file_get_contents(PRIVATE_KEY_PATH);
             $payload = [
-                'iss' => 'rest-api',
+                'iss' => 'rest-api-cake',
                 'sub' => $this->loginUser['id'],
-                'exp' => time() + 60,
+                'exp' => time() + JWT_EXPIRES // token expires in 1 hour
             ];
 
-            $jwt_token = JWT::encode($payload, $privateKey, 'RS256');
+            $jwt_token = JWT::encode($payload, $privateKey, JWT_ALG);
 
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Login complete', 'token' => $jwt_token]);
             return $this->renderJson($response->formatResponse());
@@ -81,6 +92,8 @@ class UsersController extends AppController
      */
     public function logoutApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
+
         $request_url = $this->request->getRequestTarget();
 
         $result = $this->Authentication->getResult();
@@ -99,10 +112,15 @@ class UsersController extends AppController
      */
     public function resignApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
+
         $request_url = $this->request->getRequestTarget();
 
         $user = $this->Users->find()->where(['id' => $this->loginUser['id']])->first();
         if (empty($user)) throw new RecordNotFoundException();
+
+        // rootユーザーの退会禁止
+        if ($user['email'] === 'root@example.com') throw new BadRequestException();
 
         if ($this->Users->delete($user)) {
             $response = new Response(StatusOK, $request_url, (object) ['message' => 'Resign snippetbox']);
