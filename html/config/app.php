@@ -185,7 +185,17 @@ return [
      */
     'Error' => [
         'errorLevel' => E_ALL,
-        'skipLog' => [],
+        'skipLog' => [
+            'BadRequestException',
+            'UnauthorizedException',
+            'ForbiddenException',
+            'NotFoundException',
+            'MethodNotAllowedException',
+            'MethodNotAllowedException',
+            'MissingActionException',
+            'RecordNotFoundException',
+            'MissingControllerException'
+        ],
         'log' => true,
         'trace' => true,
         'ignoredDeprecationPaths' => [],
