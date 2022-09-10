@@ -88,7 +88,7 @@ MIT License
 - [x] :gorilla: bug fix `ValidationErrorException`
 - [x] :gorilla: redesign JSON response structure
 - [x] :gorilla: add column users table
-- [ ] :gorilla: prepare admin user method (forced resign user, make admin, forced delete snippet)
+- [x] :gorilla: prepare admin user method (forced resign user, make admin, forced delete snippet)
 - [ ] :gorilla: prepare utility method and replace exception as error response
 - [ ] :gorilla: prepare test cases
 
