@@ -89,7 +89,7 @@ MIT License
 - [x] :gorilla: redesign JSON response structure
 - [x] :gorilla: add column users table
 - [x] :gorilla: prepare admin user method (forced resign user, make admin, forced delete snippet)
-- [ ] :gorilla: prepare utility method and replace exception as error response
+- [x] :gorilla: prepare utility method
 - [ ] :gorilla: prepare test cases
 
 
