@@ -9,7 +9,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
-use Cake\Http\Exception\MethodNotAllowedException;
 
 /**
  * Admin Controller
@@ -33,6 +32,15 @@ class AdminController extends AppController
     }
 
     /**
+     * @return void
+     * @throws ForbiddenException
+     */
+    private function allowOnlyAdminUser()
+    {
+        if (!$this->isAdmin()) throw new ForbiddenException();
+    }
+
+    /**
      * Make new admin user
      *
      * @param int $user_id
@@ -40,8 +48,9 @@ class AdminController extends AppController
      */
     public function makeAdminUserApi(int $user_id): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-        if (!$this->isAdmin()) throw new ForbiddenException();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
+        $this->allowOnlyAdminUser();
+
         // 自分自身（管理者自身）の処置は止める
         if ($user_id === $this->loginUser['id']) throw new BadRequestException();
 
@@ -67,8 +76,8 @@ class AdminController extends AppController
      */
     public function allUserApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
-        if (!$this->isAdmin()) throw new ForbiddenException();
+        $this->allowHttpRequestMethod(HTTP_METHOD_GET);
+        $this->allowOnlyAdminUser();
 
         $request_url = $this->request->getRequestTarget();
 
@@ -90,13 +99,11 @@ class AdminController extends AppController
      */
     public function forcedResignApi(int $user_id): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-        if (!$this->isAdmin()) throw new ForbiddenException();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
+        $this->allowOnlyAdminUser();
 
         // 自分を強制退会させることを禁止
         if ($user_id === $this->loginUser['id']) throw new BadRequestException();
-
-        $request_url = $this->request->getRequestTarget();
 
         $target_user = $this->Users->find()->where(['id' => $user_id])->first();
         // rootユーザーの削除禁止
@@ -104,11 +111,11 @@ class AdminController extends AppController
         if (empty($target_user)) throw new RecordNotFoundException();
 
         if ($this->Users->delete($target_user)) {
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Forced resign target user']);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Forced resign target user']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed forced resign target user']);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Failed forced resign target user']);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -120,20 +127,18 @@ class AdminController extends AppController
      */
     public function forcedDeleteSnippetApi(int $snippet_id): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-        if (!$this->isAdmin()) throw new ForbiddenException();
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
+        $this->allowOnlyAdminUser();
 
         $target_snippet = $this->Snippets->find()->where(['id' => $snippet_id])->first();
         if (empty($target_snippet)) throw new RecordNotFoundException();
 
         if ($this->Snippets->delete($target_snippet)) {
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Forced delete target snippet']);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Forced delete target snippet']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed forced delete target snippet']);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Failed forced delete target snippet']);
         return $this->renderJson($response->formatResponse());
     }
 }

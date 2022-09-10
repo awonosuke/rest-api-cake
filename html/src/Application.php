@@ -42,8 +42,7 @@ use Cake\Routing\Router;
  * This defines the bootstrapping logic and middleware layers you
  * want to use in your application.
  */
-class Application extends BaseApplication
-    implements AuthenticationServiceProviderInterface
+class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -162,20 +161,16 @@ class Application extends BaseApplication
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ];
 
-        // 識別子の読み込み(JWT、フォーム)
+        // JWT認証
         $service->loadIdentifier('Authentication.JwtSubject');
-        $service->loadIdentifier('Authentication.Password', compact('fields'));
-
-        // 認証子の読み込み ※JWTを優先
         $service->loadAuthenticator('Authentication.Jwt', [
             'secretKey' => file_get_contents(PUBLIC_KEY_PATH),
-            'algorithms' => [JWT_ALG],
-            'header' => 'Authorization',
-            'queryParam' => 'token',
-            'tokenPrefix' => 'bearer',
+            'algorithm' => JWT_ALG,
             'returnPayload' => false
         ]);
-        $service->loadAuthenticator('Authentication.Session');
+
+        // フォーム認証
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
             'loginUrl' => Router::url('/user/login')

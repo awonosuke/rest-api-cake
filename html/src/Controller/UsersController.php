@@ -9,7 +9,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
 use App\Library\Response;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\MethodNotAllowedException;
+use Cake\Http\Exception\UnauthorizedException;
 use Firebase\JWT\JWT;
 
 /**
@@ -33,9 +33,7 @@ class UsersController extends AppController
      */
     public function signupApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
 
         $post_data = $this->request->getData();
         // 新規ユーザー登録で管理者ユーザーは作らせない（強制的に一般ユーザーにする）
@@ -51,7 +49,7 @@ class UsersController extends AppController
                 ->first();
             if (empty($signup_user)) throw new RecordNotFoundException();
 
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Signup complete', 'user' => $signup_user]);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Signup complete', 'user' => $signup_user]);
             return $this->renderJson($response->formatResponse());
         }
 
@@ -66,9 +64,7 @@ class UsersController extends AppController
      */
     public function loginApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
 
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
@@ -76,17 +72,15 @@ class UsersController extends AppController
             $payload = [
                 'iss' => 'rest-api-cake',
                 'sub' => $this->loginUser['id'],
-                'exp' => time() + JWT_EXPIRES // token expires in 1 hour
+                'exp' => time() + JWT_EXPIRES // token expires in 1 day
             ];
-
             $jwt_token = JWT::encode($payload, $privateKey, JWT_ALG);
 
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Login complete', 'token' => $jwt_token]);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Login complete', 'token' => $jwt_token]);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusUnauthorized, $request_url, (object) ['message' => 'Unauthorized']);
-        return $this->renderJson($response->formatResponse());
+        throw new UnauthorizedException();
     }
 
     /**
@@ -96,16 +90,14 @@ class UsersController extends AppController
      */
     public function logoutApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
 
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
             $this->Authentication->logout();
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Logout complete']);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Logout complete']);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -116,9 +108,7 @@ class UsersController extends AppController
      */
     public function resignApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
 
         $user = $this->Users->find()->where(['id' => $this->loginUser['id']])->first();
         if (empty($user)) throw new RecordNotFoundException();
@@ -127,11 +117,11 @@ class UsersController extends AppController
         if ($user['email'] === 'root@example.com') throw new BadRequestException();
 
         if ($this->Users->delete($user)) {
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Resign snippetbox']);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Resign snippetbox']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed resign snippetbox']);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Failed resign snippetbox']);
         return $this->renderJson($response->formatResponse());
     }
 }

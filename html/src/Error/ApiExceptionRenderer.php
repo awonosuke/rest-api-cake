@@ -8,6 +8,7 @@ use App\Error\Exception\InvalidCodeException;
 use App\Error\Exception\InvalidUrlException;
 use App\Error\Exception\RecordSaveErrorException;
 use App\Error\Exception\ValidationErrorException;
+use App\Library\ErrorResponseBody;
 use App\Library\Response;
 use Cake\Error\ExceptionRenderer;
 use Cake\Http\Exception\MethodNotAllowedException;
@@ -43,6 +44,14 @@ class ApiExceptionRenderer extends ExceptionRenderer
     }
 
     /**
+     * @return string
+     */
+    private function requestUrl(): string
+    {
+        return $this->controller->getRequest()->getRequestTarget();
+    }
+
+    /**
      * 200 Record Not Found
      *
      * @param $exception
@@ -50,9 +59,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function recordNotFound($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusOK, $request_url, 'Record not found');
+        $response = $this->normalExceptionResponse(StatusOK, $this->requestUrl(), 'Record not found');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -64,9 +71,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function recordSaveError(RecordSaveErrorException $exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse($exception->getCode(), $request_url, $exception->getMessage());
+        $response = $this->normalExceptionResponse($exception->getCode(), $this->requestUrl(), $exception->getMessage());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -78,9 +83,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function client($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusBadRequest, $request_url, 'Client Error');
+        $response = $this->normalExceptionResponse(StatusBadRequest, $this->requestUrl(), 'Client Error');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -92,9 +95,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function badRequest($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusBadRequest, $request_url, 'Bad Request');
+        $response = $this->normalExceptionResponse(StatusBadRequest, $this->requestUrl(), 'Bad Request');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -106,9 +107,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function unauthenticated($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusUnauthorized, $request_url, 'Unauthorized');
+        $response = $this->normalExceptionResponse(StatusUnauthorized, $this->requestUrl(), 'Unauthorized');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -120,9 +119,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function forbidden($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusForbidden, $request_url, 'Forbidden');
+        $response = $this->normalExceptionResponse(StatusForbidden, $this->requestUrl(), 'Forbidden');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -134,9 +131,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function invalidCsrfToken($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusForbidden, $request_url, 'Invalid CSRF token');
+        $response = $this->normalExceptionResponse(StatusForbidden, $this->requestUrl(), 'Invalid CSRF token');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -148,9 +143,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function notFound($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusNotFound, $request_url, 'Not Found');
+        $response = $this->normalExceptionResponse(StatusNotFound, $this->requestUrl(), 'Not Found');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -162,9 +155,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function missingController($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusNotFound, $request_url, 'Not Found: Missing Controller');
+        $response = $this->normalExceptionResponse(StatusNotFound, $this->requestUrl(), 'Not Found: Missing Controller');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -176,9 +167,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function missingAction($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusNotFound, $request_url, 'Not Found: Missing Action');
+        $response = $this->normalExceptionResponse(StatusNotFound, $this->requestUrl(), 'Not Found: Missing Action');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -192,13 +181,9 @@ class ApiExceptionRenderer extends ExceptionRenderer
     {
         $request_url = $this->controller->getRequest()->getRequestTarget();
 
-        $response = $this->normalExceptionResponse(StatusMethodNotAllowed, $request_url, 'Method Not Allowed')->formatResponse();
-        return $this->controller->getResponse()
-            ->withStatus($response['code'])
-            ->withType("application/json; charset=UTF-8")
-            ->withCharset('UTF-8')
-            ->withHeader('Allow', $exception->getMessage())
-            ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
+        $response = $this->normalExceptionResponse(StatusMethodNotAllowed, $this->requestUrl(), 'Method Not Allowed');
+        return $this->renderJson($response->formatResponse())
+            ->withHeader('Allow', $exception->getMessage());
     }
 
     /**
@@ -206,14 +191,15 @@ class ApiExceptionRenderer extends ExceptionRenderer
      *
      * @param ValidationErrorException $exception
      * @return \Cake\Http\Response
+     * @throws \Exception
      */
     public function validationError(ValidationErrorException $exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
         $validation_error = $exception->getValidationErrors();
         $error_count = count($validation_error);
-        $response = new Response($exception->getCode(), $request_url, (object) ['message' => $exception->getMessage(), 'errorCount' => $error_count, 'error' => $validation_error]);
+        $error_response_body = new ErrorResponseBody($exception->getMessage(), $error_count, (object) $validation_error);
+
+        $response = new Response(StatusUnprocessableEntity, $this->requestUrl(), $error_response_body->formatErrorResponseBody());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -225,9 +211,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function error500($error): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusInternalServerError, $request_url, 'Internal Server Error');
+        $response = $this->normalExceptionResponse(StatusInternalServerError, $this->requestUrl(), 'Internal Server Error');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -239,9 +223,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function internalError($exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse(StatusInternalServerError, $request_url, 'Internal Server Error');
+        $response = $this->normalExceptionResponse(StatusInternalServerError, $this->requestUrl(), 'Internal Server Error');
         return $this->renderJson($response->formatResponse());
     }
 
@@ -253,9 +235,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function invalidCode(InvalidCodeException $exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse($exception->getCode(), $request_url, $exception->getMessage());
+        $response = $this->normalExceptionResponse($exception->getCode(), $this->requestUrl(), $exception->getMessage());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -267,9 +247,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function invalidUrl(InvalidUrlException $exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse($exception->getCode(), $request_url, $exception->getMessage());
+        $response = $this->normalExceptionResponse($exception->getCode(), $this->requestUrl(), $exception->getMessage());
         return $this->renderJson($response->formatResponse());
     }
 
@@ -281,9 +259,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function invalidBody(InvalidBodyException $exception): \Cake\Http\Response
     {
-        $request_url = $this->controller->getRequest()->getRequestTarget();
-
-        $response = $this->normalExceptionResponse($exception->getCode(), $request_url, $exception->getMessage());
+        $response = $this->normalExceptionResponse($exception->getCode(), $this->requestUrl(), $exception->getMessage());
         return $this->renderJson($response->formatResponse());
     }
 }
