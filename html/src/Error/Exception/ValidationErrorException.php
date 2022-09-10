@@ -8,7 +8,7 @@ use Cake\Http\Exception\HttpException;
 
 class ValidationErrorException extends HttpException
 {
-    protected $_validationErrors;
+    protected array $_validationErrors;
 
     public function __construct(EntityInterface $entity, $message = null, $code = StatusUnprocessableEntity)
     {
@@ -21,7 +21,7 @@ class ValidationErrorException extends HttpException
         parent::__construct($message, $code);
     }
 
-    public function getValidationErrors()
+    public function getValidationErrors(): array
     {
         return $this->_validationErrors;
     }
