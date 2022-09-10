@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Error\Exception\RecordSaveErrorException;
 use App\Library\Response;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
@@ -28,6 +29,34 @@ class AdminController extends AppController
     private function isAdmin(): bool
     {
         return ($this->loginUser['role'] === 'admin');
+    }
+
+    /**
+     * Make new admin user
+     *
+     * @param int $user_id
+     * @return \Cake\Http\Response
+     */
+    public function makeAdminUserApi(int $user_id): \Cake\Http\Response
+    {
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
+        if (!$this->isAdmin()) throw new ForbiddenException();
+        // 自分自身（管理者自身）の処置は止める
+        if ($user_id === $this->loginUser['id']) throw new BadRequestException();
+
+        $request_url = $this->request->getRequestTarget();
+
+        $target_user = $this->Users->find()->where(['id' => $user_id])->first();
+        if (empty($target_user)) throw new RecordNotFoundException();
+        if ($target_user['role'] === 'admin') throw new BadRequestException();
+
+        $target_user = $this->Users->patchEntity($target_user, ['role' => 'admin']);
+        if ($this->Users->save($target_user)) {
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Make new admin user']);
+            return $this->renderJson($response->formatResponse());
+        }
+
+        throw new RecordSaveErrorException();
     }
 
     /**

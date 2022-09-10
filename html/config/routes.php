@@ -62,6 +62,9 @@ return static function (RouteBuilder $routes) {
 
         // admin routing
         $builder->connect('/admin/user/all', ['controller' => 'Admin', 'action' => 'allUserApi']);
+        $builder->connect('/admin/user/make-admin/{userId}', ['controller' => 'Admin', 'action' => 'makeAdminUserApi'])
+            ->setPatterns(['userId' => '[0-9]+'])
+            ->setPass(['userId']);
         $builder->connect('/admin/user/forced-resign/{userId}', ['controller' => 'Admin', 'action' => 'forcedResignApi'])
             ->setPatterns(['userId' => '[0-9]+'])
             ->setPass(['userId']);
