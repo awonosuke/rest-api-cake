@@ -16,8 +16,8 @@ MIT License
 | `POST` | `/user/logout`                            | Logout the user                   |
 | `POST` | `/user/resign`                            | Resign from snippetbox            |                                          |
 | `GET`  | `/admin/user/all`                         | Return all user data              |
-| `POST` | `/admin/user/forced-resign/:userId`       | Forced resign a normal user       |
 | `POST` | `/admin/user/make-admin/:userId`          | Change a user role as `admin`     |
+| `POST` | `/admin/user/forced-resign/:userId`       | Forced resign a normal user       |
 | `POST` | `/admin/snippet/forced-delete/:snippetId` | Forced delete a someone's snippet |
 
 ## Status Code
