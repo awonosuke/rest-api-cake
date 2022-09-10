@@ -1,20 +1,9 @@
 <?php
 declare(strict_types=1);
 
-// /snippet/*
-const SnippetAll = 'GET';
-const SnippetGet = 'GET';
-const SnippetCreate = 'POST';
-
-// /user/*
-const UserSignup = 'POST';
-const UserLogin = 'POST';
-const UserLogout = 'POST';
-const UserResign = 'POST';
-
-// /admin/*
-const AdminUserAll = 'GET';
-const AdminUserForcedResign = 'POST';
-const AdminSnippetForcedDelete = 'POST';
+const HTTP_METHOD_GET = 'GET';
+const HTTP_METHOD_POST = 'POST';
+const HTTP_METHOD_PUT = 'PUT';
+const HTTP_METHOD_DELETE = 'DELETE';
 
 return array();

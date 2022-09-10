@@ -37,6 +37,7 @@ class AdminController extends AppController
      */
     public function allUserApi(): \Cake\Http\Response
     {
+        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
         if (!$this->isAdmin()) throw new ForbiddenException();
 
         $request_url = $this->request->getRequestTarget();
@@ -59,7 +60,7 @@ class AdminController extends AppController
      */
     public function forcedResignApi(int $user_id): \Cake\Http\Response
     {
-        if (!$this->request->is('POST')) throw new MethodNotAllowedException('POST');
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
         if (!$this->isAdmin()) throw new ForbiddenException();
 
         // 自分を強制退会させることを禁止
