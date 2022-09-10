@@ -21,6 +21,7 @@ class AdminController extends AppController
         parent::beforeFilter($event);
 
         $this->Users = $this->fetchTable('Users');
+        $this->Snippets = $this->fetchTable('Snippets');
     }
 
     /**
@@ -108,6 +109,31 @@ class AdminController extends AppController
         }
 
         $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed forced resign target user']);
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * Forced delete target snippet
+     *
+     * @param int $snippet_id
+     * @return \Cake\Http\Response
+     */
+    public function forcedDeleteSnippetApi(int $snippet_id): \Cake\Http\Response
+    {
+        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
+        if (!$this->isAdmin()) throw new ForbiddenException();
+
+        $request_url = $this->request->getRequestTarget();
+
+        $target_snippet = $this->Snippets->find()->where(['id' => $snippet_id])->first();
+        if (empty($target_snippet)) throw new RecordNotFoundException();
+
+        if ($this->Snippets->delete($target_snippet)) {
+            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Forced delete target snippet']);
+            return $this->renderJson($response->formatResponse());
+        }
+
+        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Failed forced delete target snippet']);
         return $this->renderJson($response->formatResponse());
     }
 }
