@@ -7,7 +7,6 @@ use App\Error\Exception\RecordSaveErrorException;
 use App\Error\Exception\ValidationErrorException;
 use App\Library\Response;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Http\Exception\MethodNotAllowedException;
 
 /**
  * Snippets Controller
@@ -24,16 +23,14 @@ class SnippetsController extends AppController
      */
     public function createSnippetApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_POST)) throw new MethodNotAllowedException(HTTP_METHOD_POST);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_POST);
 
         $snippet_replica = array_merge(['user_id' => $this->loginUser['id']], $this->request->getData());
         $new_snippet = $this->Snippets->newEntity($snippet_replica);
         if ($new_snippet->getErrors()) throw new ValidationErrorException($new_snippet);
 
         if ($this->Snippets->save($new_snippet)) {
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Create a new snippet', 'snippet' => $this->removeUserIdFromSnippet($new_snippet)]);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Create a new snippet', 'snippet' => $this->removeUserIdFromSnippet($new_snippet)]);
             return $this->renderJson($response->formatResponse());
         }
 
@@ -64,14 +61,12 @@ class SnippetsController extends AppController
      */
     public function getSnippetApi(int $snippet_id): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_GET);
 
         $snippet = $this->Snippets->findExistSnippet($snippet_id, $this->loginUser['id'])->first();
         if (empty($snippet)) throw new RecordNotFoundException();
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get a snippet', 'snippet' => $snippet]);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Get a snippet', 'snippet' => $snippet]);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -83,17 +78,15 @@ class SnippetsController extends AppController
      */
     public function allSnippetApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_GET);
 
         $all_snippet = $this->Snippets->findAllExistSnippet($this->loginUser['id']);
         if (empty($all_snippet)) {
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Snippet Not Found']);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all snippet', 'snippet' => $all_snippet]);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Get all snippet', 'snippet' => $all_snippet]);
         return $this->renderJson($response->formatResponse());
     }
 
@@ -105,17 +98,15 @@ class SnippetsController extends AppController
      */
     public function allExpiredSnippetApi(): \Cake\Http\Response
     {
-        if (!$this->request->is(HTTP_METHOD_GET)) throw new MethodNotAllowedException(HTTP_METHOD_GET);
-
-        $request_url = $this->request->getRequestTarget();
+        $this->allowHttpRequestMethod(HTTP_METHOD_GET);
 
         $all_expired_snippet = $this->Snippets->findAllExpiredSnippet($this->loginUser['id']);
         if (empty($all_expired_snippet)) {
-            $response = new Response(StatusOK, $request_url, (object) ['message' => 'Expired Snippet Not Found']);
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Expired Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $request_url, (object) ['message' => 'Get all expired snippet', 'snippet' => $all_expired_snippet]);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Get all expired snippet', 'snippet' => $all_expired_snippet]);
         return $this->renderJson($response->formatResponse());
     }
 }

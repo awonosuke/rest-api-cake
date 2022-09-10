@@ -20,6 +20,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManagerInterface;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 
@@ -34,12 +35,14 @@ use Cake\Http\ServerRequest;
 class AppController extends Controller
 {
     protected $loginUser;
+    protected string $requestUrl;
 
     public function __construct(?ServerRequest $request = null, ?Response $response = null, ?string $name = null, ?EventManagerInterface $eventManager = null, ?ComponentRegistry $components = null)
     {
         parent::__construct($request, $response, $name, $eventManager, $components);
 
         $this->loginUser = $this->Authentication->getResult()->getData();
+        $this->requestUrl = $request->getRequestTarget();
     }
 
     /**
@@ -86,5 +89,15 @@ class AppController extends Controller
             ->withType("application/json; charset=UTF-8")
             ->withCharset('UTF-8')
             ->withStringBody(json_encode($response, JSON_FORCE_OBJECT));
+    }
+
+    /**
+     * @param string $http_method
+     * @return void
+     * @throws MethodNotAllowedException
+     */
+    protected function allowHttpRequestMethod(string $http_method)
+    {
+        if (!$this->request->is($http_method)) throw new MethodNotAllowedException($http_method);
     }
 }
