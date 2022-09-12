@@ -107,7 +107,7 @@ at PHP container
 /var/www/html
 
 ---- Generate Private Key ----
-# openssl genrsa -out config/jwt.key 1024
+# openssl genrsa -out config/jwt.key 2048
 
 ---- Generate Public Key ----
 # openssl rsa -in config/jwt.key -outform PEM -pubout -out config/jwt.pem
