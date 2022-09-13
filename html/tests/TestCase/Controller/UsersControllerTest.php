@@ -29,33 +29,101 @@ class UsersControllerTest extends TestCase
      * Test index method
      *
      * @return void
-     * @uses \App\Controller\UsersController::index()
+     * @uses \App\Controller\UsersController::signupApi()
      */
     public function testSignupApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $url = '/user/signup';
+
+        // OK
+        $this->post($url, [
+            'email' => 'test2@example.com',
+            'password' => 'test2',
+            'user_name' => 'test2'
+        ]);
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Signup complete');
+
+        // Method Not Allowed
+        $this->get($url);
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
+
+        // Validation Unique Constraint (email)
+        $this->post($url, [
+            'email' => 'test2@example.com',
+            'password' => 'test2',
+            'user_name' => 'test2'
+        ]);
+        $this->assertResponseCode(StatusUnprocessableEntity);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Validation error occur');
     }
 
     /**
      * Test view method
      *
      * @return void
-     * @uses \App\Controller\UsersController::view()
+     * @uses \App\Controller\UsersController::loginApi()
      */
     public function testLoginApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        // OK
+        $this->post('/user/login', [
+            'email' => 'test@example.com',
+            'password' => 'test',
+        ]);
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Login complete');
+
+        // Unauthorized
+        $this->post('/user/login', [
+            'email' => 'dummy@example.com',
+            'password' => 'dummy',
+        ]);
+        $this->assertResponseCode(StatusUnauthorized);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Unauthorized');
     }
 
     /**
      * Test add method
      *
      * @return void
-     * @uses \App\Controller\UsersController::add()
+     * @uses \App\Controller\UsersController::logoutApi()
      */
     public function testLogoutApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $url = '/user/logout';
+
+        // Unauthorized
+        $this->get($url);
+        $this->assertResponseCode(StatusUnauthorized);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Unauthorized');
+
+//        // OK
+//        $this->login();
+//        $token = $this->getToken();
+//        $this->configRequest([
+//            'headers' => ['Authorization' => 'Bearer' . $token]
+//        ]);
+//        $this->post($url);
+//        $this->assertResponseOk();
+//        $this->assertContentType('application/json');
+//        $this->assertResponseContains('Logout complete');
+//
+//        // Method Not Allowed
+//        $this->configRequest([
+//            'headers' => ['Authorization' => 'Bearer' . $token]
+//        ]);
+//        $this->get($url);
+//        $this->assertResponseCode(StatusMethodNotAllowed);
+//        $this->assertContentType('application/json');
+//        $this->assertResponseContains('Method Not Allowed');
     }
 
     /**
@@ -66,6 +134,14 @@ class UsersControllerTest extends TestCase
      */
     public function testResignApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $url = '/user/resign';
+
+        // Unauthorized
+        $this->get($url);
+        $this->assertResponseCode(StatusUnauthorized);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Unauthorized');
+
+        // OK
     }
 }
