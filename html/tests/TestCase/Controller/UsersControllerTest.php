@@ -31,7 +31,7 @@ class UsersControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\UsersController::index()
      */
-    public function testIndex(): void
+    public function testSignupApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -42,7 +42,7 @@ class UsersControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\UsersController::view()
      */
-    public function testView(): void
+    public function testLoginApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -53,7 +53,7 @@ class UsersControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\UsersController::add()
      */
-    public function testAdd(): void
+    public function testLogoutApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -64,18 +64,7 @@ class UsersControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\UsersController::edit()
      */
-    public function testEdit(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test delete method
-     *
-     * @return void
-     * @uses \App\Controller\UsersController::delete()
-     */
-    public function testDelete(): void
+    public function testResignApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

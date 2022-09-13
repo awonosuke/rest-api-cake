@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\SnippetsController;
+use App\Controller\AdminController;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 /**
  * App\Controller\SnippetsController Test Case
  *
- * @uses \App\Controller\SnippetsController
+ * @uses \App\Controller\AdminController
  */
-class SnippetsControllerTest extends TestCase
+class AdminControllerTest extends TestCase
 {
     use IntegrationTestTrait;
 
@@ -32,7 +32,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::index()
      */
-    public function testCreateSnippetApi(): void
+    public function testMakeAdminUserApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -43,7 +43,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::view()
      */
-    public function testGetSnippetApi(): void
+    public function testAllUserApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -54,7 +54,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::add()
      */
-    public function testAllSnippetApi(): void
+    public function testForcedResignApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -65,7 +65,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::delete()
      */
-    public function testAllExpireSnippetApi(): void
+    public function testForcedDeleteSnippetApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
