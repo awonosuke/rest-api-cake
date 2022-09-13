@@ -105,6 +105,18 @@ class ApiExceptionRenderer extends ExceptionRenderer
      * @param $exception
      * @return \Cake\Http\Response
      */
+    public function unauthorized($exception): \Cake\Http\Response
+    {
+        $response = $this->normalExceptionResponse(StatusUnauthorized, $this->requestUrl(), 'Unauthorized');
+        return $this->renderJson($response->formatResponse());
+    }
+
+    /**
+     * 401 Unauthorized
+     *
+     * @param $exception
+     * @return \Cake\Http\Response
+     */
     public function unauthenticated($exception): \Cake\Http\Response
     {
         $response = $this->normalExceptionResponse(StatusUnauthorized, $this->requestUrl(), 'Unauthorized');
