@@ -21,10 +21,10 @@ class UsersFixture extends TestFixture
             [
                 'id' => 1,
                 'email' => 'test@example.com',
-                'password' => 'test',
+                'password' => '$2y$10$Afyt31Owvbm4/oeL9C2LmOYOCLJntrEIgkfJOyNmrLsSfuPlcVpqq',
                 'user_name' => 'test',
-                'created' => '2022-08-30 01:18:27',
-                'updated' => '2022-08-30 01:18:27',
+                'created' => '2022-09-13 23:31:13',
+                'updated' => '2022-09-13 23:31:13',
             ],
         ];
         parent::init();
