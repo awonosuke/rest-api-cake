@@ -22,6 +22,7 @@ class SnippetsControllerTest extends TestCase
      * @var array<string>
      */
     protected $fixtures = [
+        'app.Users',
         'app.Snippets',
     ];
 
@@ -31,7 +32,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::index()
      */
-    public function testIndex(): void
+    public function testCreateSnippetApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -42,7 +43,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::view()
      */
-    public function testView(): void
+    public function testGetSnippetApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -53,18 +54,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::add()
      */
-    public function testAdd(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test edit method
-     *
-     * @return void
-     * @uses \App\Controller\SnippetsController::edit()
-     */
-    public function testEdit(): void
+    public function testAllSnippetApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -75,7 +65,7 @@ class SnippetsControllerTest extends TestCase
      * @return void
      * @uses \App\Controller\SnippetsController::delete()
      */
-    public function testDelete(): void
+    public function testAllExpireSnippetApi(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
