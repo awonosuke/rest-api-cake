@@ -80,7 +80,8 @@ class UsersController extends AppController
             return $this->renderJson($response->formatResponse());
         }
 
-        throw new UnauthorizedException();
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Either email or password is invalid']);
+        return $this->renderJson($response->formatResponse());
     }
 
     /**
