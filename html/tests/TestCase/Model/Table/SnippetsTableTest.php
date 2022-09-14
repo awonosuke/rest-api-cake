@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\SnippetsTable;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -24,33 +23,9 @@ class SnippetsTableTest extends TestCase
      * @var array<string>
      */
     protected $fixtures = [
-        'app.Snippets',
         'app.Users',
+        'app.Snippets',
     ];
-
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $config = $this->getTableLocator()->exists('Snippets') ? [] : ['className' => SnippetsTable::class];
-        $this->Snippets = $this->getTableLocator()->get('Snippets', $config);
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    protected function tearDown(): void
-    {
-        unset($this->Snippets);
-
-        parent::tearDown();
-    }
 
     /**
      * Test validationDefault method
