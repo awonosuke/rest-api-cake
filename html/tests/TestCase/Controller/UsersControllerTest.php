@@ -70,8 +70,10 @@ class UsersControllerTest extends TestCase
      */
     public function testLoginApi(): void
     {
+        $url = '/user/login';
+
         // OK
-        $this->post('/user/login', [
+        $this->post($url, [
             'email' => 'test@example.com',
             'password' => 'test',
         ]);
@@ -79,14 +81,20 @@ class UsersControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Login complete');
 
-        // Unauthorized
-        $this->post('/user/login', [
+        // Failed Login
+        $this->post($url, [
             'email' => 'dummy@example.com',
             'password' => 'dummy',
         ]);
-        $this->assertResponseCode(StatusUnauthorized);
+        $this->assertResponseCode(StatusOK);
         $this->assertContentType('application/json');
-        $this->assertResponseContains('Unauthorized');
+        $this->assertResponseContains('Either email or password is invalid');
+
+        // Method Not Allowed
+        $this->get($url);
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
     }
 
     /**
