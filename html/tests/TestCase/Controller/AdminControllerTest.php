@@ -34,7 +34,25 @@ class AdminControllerTest extends TestCase
      */
     public function testMakeAdminUserApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $url = '/admin/make-admin/';
+
+        // OK
+        $this->post($url . '2');
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Make new admin user');
+
+        // Bad Request
+        $this->post($url . '2');
+        $this->assertResponseCode(StatusBadRequest);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Bad Request');
+
+        // Method Not Allowed
+        $this->get($url . '2');
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
     }
 
     /**
@@ -45,7 +63,19 @@ class AdminControllerTest extends TestCase
      */
     public function testAllUserApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $url = '/admin/user/all';
+
+        // OK
+        $this->get($url);
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Get all user');
+
+        // Method Not Allowed
+        $this->post($url);
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
     }
 
     /**
@@ -56,7 +86,25 @@ class AdminControllerTest extends TestCase
      */
     public function testForcedResignApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $url = '/admin/user/forced-resign/';
+
+        // OK
+        $this->post($url . '2');
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Forced resign target user');
+
+        // Record Not Found
+        $this->post($url . '0');
+        $this->assertResponseCode(StatusOK);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Record Not Found');
+
+        // Method Not Allowed
+        $this->get($url . '2');
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
     }
 
     /**
@@ -67,6 +115,24 @@ class AdminControllerTest extends TestCase
      */
     public function testForcedDeleteSnippetApi(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $url = '/admin/snippet/forced-delete/';
+
+        // OK
+        $this->post($url . '1');
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Make new admin user');
+
+        // Record Not Found
+        $this->post($url . '0');
+        $this->assertResponseCode(StatusOK);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Record Not Found');
+
+        // Method Not Allowed
+        $this->get($url . '1');
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
     }
 }
