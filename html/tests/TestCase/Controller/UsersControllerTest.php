@@ -142,6 +142,16 @@ class UsersControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Unauthorized');
 
-        // OK
+//        // OK
+//        $this->post($url);
+//        $this->assertResponseOk();
+//        $this->assertContentType('application/json');
+//        $this->assertResponseContains('Resign snippetbox');
+//
+//        // Method Not Allowed
+//        $this->get($url);
+//        $this->assertResponseCode(StatusMethodNotAllowed);
+//        $this->assertContentType('application/json');
+//        $this->assertResponseContains('Method Not Allowed');
     }
 }
