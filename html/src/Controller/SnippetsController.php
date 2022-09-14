@@ -81,7 +81,7 @@ class SnippetsController extends AppController
         $this->allowHttpRequestMethod(HTTP_METHOD_GET);
 
         $all_snippet = $this->Snippets->findAllExistSnippet($this->loginUser['id']);
-        if (empty($all_snippet)) {
+        if ($all_snippet->count() === 0) {
             $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Snippet Not Found']);
             return $this->renderJson($response->formatResponse());
         }
