@@ -25,6 +25,15 @@ class UsersControllerTest extends TestCase
         'app.Users',
     ];
 
+    private function getToken(): string
+    {
+        $this->post('/user/login', [
+            'email' => 'root@example.com',
+            'password' => 'root',
+        ]);
+        return $this->_response->getBody()->getContents();
+    }
+
     /**
      * Test index method
      *
