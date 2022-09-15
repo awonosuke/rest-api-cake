@@ -60,7 +60,58 @@ class UsersTableTest extends TestCase
      */
     public function testValidationDefault(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        // Required property
+        $test_user_entity = $this->Users->newEntity([]);
+        $expected_error = [
+            'email' => [
+                '_required' => 'This field is required'
+            ],
+            'password' => [
+                '_required' => 'This field is required'
+            ],
+            'user_name' => [
+                '_required' => 'This field is required'
+            ]
+        ];
+        $this->assertEquals($expected_error, $test_user_entity->getErrors());
+
+        // NOT NULL
+        $test_user_entity = $this->Users->newEntity([
+            'email' => null,
+            'password' => null,
+            'user_name' => null
+        ]);
+        $expected_error = [
+            'email' => [
+                '_empty' => 'This field cannot be left empty'
+            ],
+            'password' => [
+                '_empty' => 'This field cannot be left empty'
+            ],
+            'user_name' => [
+                '_empty' => 'This field cannot be left empty'
+            ]
+        ];
+        $this->assertEquals($expected_error, $test_user_entity->getErrors());
+
+        // Over range
+        $test_user_entity = $this->Users->newEntity([
+            'email' => 'rootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootrootroot@example.com',
+            'password' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            'user_name' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.'
+        ]);
+        $expected_error = [
+            'email' => [
+                'maxLength' => 'The provided value is invalid'
+            ],
+            'password' => [
+                'maxLength' => 'The provided value is invalid'
+            ],
+            'user_name' => [
+                'maxLength' => 'The provided value is invalid'
+            ]
+        ];
+        $this->assertEquals($expected_error, $test_user_entity->getErrors());
     }
 
     /**
