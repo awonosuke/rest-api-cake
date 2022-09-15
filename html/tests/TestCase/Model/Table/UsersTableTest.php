@@ -71,6 +71,16 @@ class UsersTableTest extends TestCase
      */
     public function testBuildRules(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $test_user_entity = $this->Users->newEntity([
+            'email' => 'root@example.com',
+            'password' => 'root',
+            'user_name' => 'root'
+        ]);
+        $expected_error = [
+            'email' => [
+                'unique' => 'The provided value is invalid'
+            ]
+        ];
+        $this->assertEquals($expected_error, $test_user_entity->getErrors());
     }
 }
