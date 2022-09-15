@@ -86,11 +86,20 @@ class UsersControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Method Not Allowed');
 
-        // Validation Unique Constraint (email)
+        // Validation Unique Constraint (same email)
         $this->post($url, [
             'email' => 'test2@example.com',
             'password' => 'test2',
             'user_name' => 'test2'
+        ]);
+        $this->assertResponseCode(StatusUnprocessableEntity);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Validation error occur');
+
+        // Validation Unique Constraint (missing property)
+        $this->post($url, [
+            'email' => 'test2@example.com',
+            'password' => 'test2'
         ]);
         $this->assertResponseCode(StatusUnprocessableEntity);
         $this->assertContentType('application/json');
