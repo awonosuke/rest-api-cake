@@ -29,6 +29,15 @@ class UsersFixture extends TestFixture
             ],
             [
                 'id' => 2,
+                'email' => 'admin@example.com',
+                'password' => '$2y$10$/aPKYGvt8M9WM0phBKL8le8vOkhC0sEUCtlcPwu7HBvc50xkh433m',
+                'user_name' => 'admin',
+                'role' => 'admin',
+                'created' => '2022-09-13 23:31:13',
+                'updated' => '2022-09-13 23:31:13'
+            ],
+            [
+                'id' => 3,
                 'email' => 'test@example.com',
                 'password' => '$2y$10$Afyt31Owvbm4/oeL9C2LmOYOCLJntrEIgkfJOyNmrLsSfuPlcVpqq',
                 'user_name' => 'test',
