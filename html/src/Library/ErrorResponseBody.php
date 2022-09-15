@@ -35,7 +35,7 @@ class ErrorResponseBody {
     {
         return (object) array(
             'message' => $this->message,
-            'url'  => $this->error_count,
+            'errorCount' => $this->error_count,
             'error' => $this->error,
         );
     }
