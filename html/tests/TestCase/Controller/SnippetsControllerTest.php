@@ -97,9 +97,9 @@ class SnippetsControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Method Not Allowed');
 
-        // Validation Unique Constraint (email)
+        // Validation Unique Constraint (missing property)
         $this->setRequestHeaders($jwt);
-        $this->post($url);
+        $this->post($url, ['content' => 'An old silent pond']);
         $this->assertResponseCode(StatusUnprocessableEntity);
         $this->assertContentType('application/json');
         $this->assertResponseContains('Validation error occur');
