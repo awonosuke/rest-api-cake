@@ -106,9 +106,9 @@ class AdminController extends AppController
         if ($user_id === $this->loginUser['id']) throw new BadRequestException();
 
         $target_user = $this->Users->find()->where(['id' => $user_id])->first();
+        if (empty($target_user)) throw new RecordNotFoundException();
         // rootユーザーの削除禁止
         if ($target_user['email'] === 'root@example.com') throw new BadRequestException();
-        if (empty($target_user)) throw new RecordNotFoundException();
 
         if ($this->Users->delete($target_user)) {
             $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Forced resign target user']);
