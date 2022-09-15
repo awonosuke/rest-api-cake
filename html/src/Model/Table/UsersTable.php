@@ -64,6 +64,7 @@ class UsersTable extends Table
     {
         $validator
             ->email('email')
+            ->maxLength('email', 255)
             ->requirePresence('email', 'create')
             ->notEmptyString('email')
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);

@@ -26,7 +26,42 @@ class UsersControllerTest extends TestCase
     ];
 
     /**
-     * Test index method
+     * Get JWT method
+     *
+     * @param string $role 'root'|'admin'|'test'
+     * @return string
+     */
+    private function getJsonWebToken(string $role): string
+    {
+        $this->post('/user/login', [
+            'email' => $role . '@example.com',
+            'password' => $role,
+        ]);
+        $response_body = json_decode((string) $this->_response->getBody(), true);
+        return $response_body['body']['token'];
+    }
+
+    private function setRequestHeaders(string $jwt)
+    {
+        $this->configRequest([
+            'headers' => ['Authorization' => 'Bearer ' . $jwt]
+        ]);
+    }
+
+    /**
+     * Expire JWT method byb sending logout request
+     *
+     * @param string $jwt
+     * @return void
+     */
+    private function expireJsonWebToken(string $jwt)
+    {
+        $this->setRequestHeaders($jwt);
+        $this->post('/user/logout');
+    }
+
+    /**
+     * Test signup method
      *
      * @return void
      * @uses \App\Controller\UsersController::signupApi()
@@ -51,7 +86,7 @@ class UsersControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Method Not Allowed');
 
-        // Validation Unique Constraint (email)
+        // Validation Unique Constraint (same email)
         $this->post($url, [
             'email' => 'test2@example.com',
             'password' => 'test2',
@@ -60,18 +95,29 @@ class UsersControllerTest extends TestCase
         $this->assertResponseCode(StatusUnprocessableEntity);
         $this->assertContentType('application/json');
         $this->assertResponseContains('Validation error occur');
+
+        // Validation Unique Constraint (missing property)
+        $this->post($url, [
+            'email' => 'test2@example.com',
+            'password' => 'test2'
+        ]);
+        $this->assertResponseCode(StatusUnprocessableEntity);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Validation error occur');
     }
 
     /**
-     * Test view method
+     * Test login method
      *
      * @return void
      * @uses \App\Controller\UsersController::loginApi()
      */
     public function testLoginApi(): void
     {
+        $url = '/user/login';
+
         // OK
-        $this->post('/user/login', [
+        $this->post($url, [
             'email' => 'test@example.com',
             'password' => 'test',
         ]);
@@ -79,18 +125,30 @@ class UsersControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Login complete');
 
-        // Unauthorized
-        $this->post('/user/login', [
+        // token取得
+        $response_body = json_decode((string) $this->_response->getBody(), true);
+        $jwt = $response_body['body']['token'];
+
+        // Failed Login
+        $this->post($url, [
             'email' => 'dummy@example.com',
             'password' => 'dummy',
         ]);
-        $this->assertResponseCode(StatusUnauthorized);
+        $this->assertResponseCode(StatusOK);
         $this->assertContentType('application/json');
-        $this->assertResponseContains('Unauthorized');
+        $this->assertResponseContains('Either email or password is invalid');
+
+        // Method Not Allowed
+        $this->get($url);
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
+
+        $this->expireJsonWebToken($jwt);
     }
 
     /**
-     * Test add method
+     * Test logout method
      *
      * @return void
      * @uses \App\Controller\UsersController::logoutApi()
@@ -105,29 +163,27 @@ class UsersControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Unauthorized');
 
-//        // OK
-//        $this->login();
-//        $token = $this->getToken();
-//        $this->configRequest([
-//            'headers' => ['Authorization' => 'Bearer' . $token]
-//        ]);
-//        $this->post($url);
-//        $this->assertResponseOk();
-//        $this->assertContentType('application/json');
-//        $this->assertResponseContains('Logout complete');
-//
-//        // Method Not Allowed
-//        $this->configRequest([
-//            'headers' => ['Authorization' => 'Bearer' . $token]
-//        ]);
-//        $this->get($url);
-//        $this->assertResponseCode(StatusMethodNotAllowed);
-//        $this->assertContentType('application/json');
-//        $this->assertResponseContains('Method Not Allowed');
+        $jwt = $this->getJsonWebToken('test');
+
+        // OK
+        $this->setRequestHeaders($jwt);
+        $this->post($url);
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Logout complete');
+
+        // Method Not Allowed
+        $this->setRequestHeaders($jwt);
+        $this->get($url);
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
+
+        $this->expireJsonWebToken($jwt);
     }
 
     /**
-     * Test edit method
+     * Test resign user method
      *
      * @return void
      * @uses \App\Controller\UsersController::edit()
@@ -142,16 +198,31 @@ class UsersControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Unauthorized');
 
-//        // OK
-//        $this->post($url);
-//        $this->assertResponseOk();
-//        $this->assertContentType('application/json');
-//        $this->assertResponseContains('Resign snippetbox');
-//
-//        // Method Not Allowed
-//        $this->get($url);
-//        $this->assertResponseCode(StatusMethodNotAllowed);
-//        $this->assertContentType('application/json');
-//        $this->assertResponseContains('Method Not Allowed');
+        $jwt = $this->getJsonWebToken('test');
+
+        // Method Not Allowed
+        $this->setRequestHeaders($jwt);
+        $this->get($url);
+        $this->assertResponseCode(StatusMethodNotAllowed);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Method Not Allowed');
+
+        // OK
+        $this->setRequestHeaders($jwt);
+        $this->post($url);
+        $this->assertResponseOk();
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Resign snippetbox');
+
+        $this->expireJsonWebToken($jwt);
+
+        // Bad Request : Try to resign "root" user
+        $jwt = $this->getJsonWebToken('root');
+        $this->setRequestHeaders($jwt);
+        $this->post($url);
+        $this->assertResponseCode(StatusBadRequest);
+        $this->assertContentType('application/json');
+        $this->assertResponseContains('Bad Request');
+        $this->expireJsonWebToken($jwt);
     }
 }

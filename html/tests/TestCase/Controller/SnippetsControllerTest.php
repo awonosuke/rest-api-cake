@@ -28,7 +28,42 @@ class SnippetsControllerTest extends TestCase
     ];
 
     /**
-     * Test index method
+     * Get JWT method
+     *
+     * @param string $role 'root'|'admin'|'test'
+     * @return string
+     */
+    private function getJsonWebToken(string $role): string
+    {
+        $this->post('/user/login', [
+            'email' => $role . '@example.com',
+            'password' => $role,
+        ]);
+        $response_body = json_decode((string) $this->_response->getBody(), true);
+        return $response_body['body']['token'];
+    }
+
+    private function setRequestHeaders(string $jwt)
+    {
+        $this->configRequest([
+            'headers' => ['Authorization' => 'Bearer ' . $jwt]
+        ]);
+    }
+
+    /**
+     * Expire JWT method byb sending logout request
+     *
+     * @param string $jwt
+     * @return void
+     */
+    private function expireJsonWebToken(string $jwt)
+    {
+        $this->setRequestHeaders($jwt);
+        $this->post('/user/logout');
+    }
+
+    /**
+     * Test create new snippet method
      *
      * @return void
      * @uses \App\Controller\SnippetsController::index()
@@ -43,7 +78,10 @@ class SnippetsControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Unauthorized');
 
+        $jwt = $this->getJsonWebToken('test');
+
         // OK
+        $this->setRequestHeaders($jwt);
         $this->post($url, [
             'content' => 'An old silent pond',
             'expire' => (new FrozenTime('+3 days'))->i18nFormat('yyyy-MM-dd HH:mm:ss')
@@ -53,55 +91,66 @@ class SnippetsControllerTest extends TestCase
         $this->assertResponseContains('Create a new snippet');
 
         // Method Not Allowed
+        $this->setRequestHeaders($jwt);
         $this->get($url);
         $this->assertResponseCode(StatusMethodNotAllowed);
         $this->assertContentType('application/json');
         $this->assertResponseContains('Method Not Allowed');
 
-        // Validation Unique Constraint (email)
-        $this->post($url);
+        // Validation Unique Constraint (missing property)
+        $this->setRequestHeaders($jwt);
+        $this->post($url, ['content' => 'An old silent pond']);
         $this->assertResponseCode(StatusUnprocessableEntity);
         $this->assertContentType('application/json');
         $this->assertResponseContains('Validation error occur');
+
+        $this->expireJsonWebToken($jwt);
     }
 
     /**
-     * Test view method
+     * Test get snippet method
      *
      * @return void
      * @uses \App\Controller\SnippetsController::view()
      */
     public function testGetSnippetApi(): void
     {
-        $url = '/snippet/1';
+        $url = '/snippet/';
 
         // Unauthorized
-        $this->get($url);
+        $this->get($url . '2');
         $this->assertResponseCode(StatusUnauthorized);
         $this->assertContentType('application/json');
         $this->assertResponseContains('Unauthorized');
 
+        $jwt = $this->getJsonWebToken('test');
+
         // OK
-        $this->get($url);
+        $this->setRequestHeaders($jwt);
+        $this->get($url . '2');
         $this->assertResponseOk();
         $this->assertContentType('application/json');
         $this->assertResponseContains('Get a snippet');
 
-        // Record not found
-        $this->get('/snippet/0');
+        // Record Not Found
+        $this->setRequestHeaders($jwt);
+        $this->get($url . '0');
         $this->assertResponseOk();
         $this->assertContentType('application/json');
-        $this->assertResponseContains('Record not found');
+        $this->assertResponseContains('Record Not Found');
 
         // Method Not Allowed
-        $this->post($url);
+        $this->setRequestHeaders($jwt);
+        $this->post($url . '2');
         $this->assertResponseCode(StatusMethodNotAllowed);
         $this->assertContentType('application/json');
         $this->assertResponseContains('Method Not Allowed');
+
+        $this->expireJsonWebToken($jwt);
     }
 
     /**
-     * Test add method
+     * Test get all snippet method
      *
      * @return void
      * @uses \App\Controller\SnippetsController::add()
@@ -116,16 +165,22 @@ class SnippetsControllerTest extends TestCase
         $this->assertContentType('application/json');
         $this->assertResponseContains('Unauthorized');
 
+        $jwt = $this->getJsonWebToken('test');
+
         // OK
+        $this->setRequestHeaders($jwt);
         $this->get($url);
         $this->assertResponseOk();
         $this->assertContentType('application/json');
         $this->assertResponseContains('Get all snippet');
 
         // Method Not Allowed
+        $this->setRequestHeaders($jwt);
         $this->post($url);
         $this->assertResponseCode(StatusMethodNotAllowed);
         $this->assertContentType('application/json');
         $this->assertResponseContains('Method Not Allowed');
+
+        $this->expireJsonWebToken($jwt);
     }
 }

@@ -80,7 +80,8 @@ class UsersController extends AppController
             return $this->renderJson($response->formatResponse());
         }
 
-        throw new UnauthorizedException();
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Either email or password is invalid']);
+        return $this->renderJson($response->formatResponse());
     }
 
     /**
@@ -95,9 +96,12 @@ class UsersController extends AppController
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
             $this->Authentication->logout();
+
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Logout complete']);
+            return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Logout complete']);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Failed logout']);
         return $this->renderJson($response->formatResponse());
     }
 

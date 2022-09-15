@@ -48,4 +48,34 @@ class SnippetsTableTest extends TestCase
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
+
+    /**
+     * Test find "a" exist snippet
+     * 
+     * @return void
+     */
+    public function testFindExistSnippet()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test find all exist snippet
+     *
+     * @return void
+     */
+    public function testFindAllExistSnippet()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test find all expired snippet
+     *
+     * @return void
+     */
+    public function testFindAllExpiredSnippet()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
 }
