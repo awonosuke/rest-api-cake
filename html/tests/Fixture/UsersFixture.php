@@ -44,6 +44,15 @@ class UsersFixture extends TestFixture
                 'role' => 'user',
                 'created' => '2022-09-13 23:31:13',
                 'updated' => '2022-09-13 23:31:13'
+            ],
+            [
+                'id' => 4,
+                'email' => 'cakephp@example.com',
+                'password' => '$2y$10$e6f9KyM2AchdaM5LQG7BjO/dKVvlgdlXLCBoSuNmwXlTzSD/m.ATu',
+                'user_name' => 'cakephp',
+                'role' => 'user',
+                'created' => '2022-09-13 23:31:13',
+                'updated' => '2022-09-13 23:31:13'
             ]
         ];
         parent::init();
