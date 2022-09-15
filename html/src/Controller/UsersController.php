@@ -96,9 +96,12 @@ class UsersController extends AppController
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
             $this->Authentication->logout();
+
+            $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Logout complete']);
+            return $this->renderJson($response->formatResponse());
         }
 
-        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Logout complete']);
+        $response = new Response(StatusOK, $this->requestUrl, (object) ['message' => 'Failed logout']);
         return $this->renderJson($response->formatResponse());
     }
 
