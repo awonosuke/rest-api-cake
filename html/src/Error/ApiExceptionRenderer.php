@@ -59,7 +59,7 @@ class ApiExceptionRenderer extends ExceptionRenderer
      */
     public function recordNotFound($exception): \Cake\Http\Response
     {
-        $response = $this->normalExceptionResponse(StatusOK, $this->requestUrl(), 'Record not found');
+        $response = $this->normalExceptionResponse(StatusOK, $this->requestUrl(), 'Record Not Found');
         return $this->renderJson($response->formatResponse());
     }
 
