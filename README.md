@@ -74,17 +74,12 @@ MIT License
 
 ## Progress :gorilla:
 - [x] :gorilla: build environment
-- [x] :gorilla: bake controller and model based on table 
 - [x] :gorilla: setup for JSON response
-- [x] :gorilla: prepare user method
-- [x] :gorilla: prepare snippet method
+- [x] :gorilla: prepare user and snippet method
 - [x] :gorilla: setup for JSON response when Exception thrown
 - [x] :gorilla: prepare authenticate method
 - [x] :gorilla: prepare login and logout method
-- [x] :gorilla: bug fix around user authentication (JWT auth)
-- [x] :gorilla: add column users table
 - [x] :gorilla: prepare admin user method (forced resign user, make admin, forced delete snippet)
-- [x] :gorilla: prepare utility method
 - [ ] :gorilla: prepare test cases
 
 
