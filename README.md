@@ -72,7 +72,7 @@ MIT License
 ```
 
 
-## Progress :gorilla:
+## Progress
 - [x] :gorilla: build environment
 - [x] :gorilla: setup for JSON response
 - [x] :gorilla: prepare user and snippet method
