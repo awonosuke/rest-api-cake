@@ -114,6 +114,7 @@ class SnippetsTableTest extends TestCase
             'content' => 'This is test snippet',
             'expire' => (new FrozenTime('+5 days'))->i18nFormat('yyyy-MM-dd HH:mm:ss')
         ]);
+        $this->Snippets->save($test_snippet_entity); // 指定したユーザーのレコードがあるか確認
         $expected_error = [
             'user_id' => [
                 '_existsIn' => 'This value does not exist'
