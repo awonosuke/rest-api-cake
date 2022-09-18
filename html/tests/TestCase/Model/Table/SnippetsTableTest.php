@@ -6,6 +6,7 @@ namespace App\Test\TestCase\Model\Table;
 use App\Model\Table\UsersTable;
 use App\Model\Table\SnippetsTable;
 use Cake\I18n\FrozenTime;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -130,7 +131,21 @@ class SnippetsTableTest extends TestCase
      */
     public function testFindExistSnippet()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $exist_snippet_query = $this->Snippets
+            ->findExistSnippet(1, 1)
+            ->select(['id', 'content'], true);
+        $expected_query_result = [
+            0 => [
+                'id' => 1,
+                'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            ]
+        ];
+        $this->assertInstanceOf('Cake\ORM\Query', $exist_snippet_query);
+        $this->assertEquals($expected_query_result, $exist_snippet_query->disableHydration()->toArray());
+
+        $expire_snippet_query = $this->Snippets->findExistSnippet(4, 3)->select(['id', 'content'], true);
+        $expected_query_result = [];
+        $this->assertEquals($expected_query_result, $expire_snippet_query->disableHydration()->toArray());
     }
 
     /**
@@ -140,7 +155,26 @@ class SnippetsTableTest extends TestCase
      */
     public function testFindAllExistSnippet()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $all_exist_snippet_query = $this->Snippets
+            ->findAllExistSnippet(3)
+            ->select(['id', 'content'], true);
+        $expected_query_result = [
+            0 => [
+                'id' => 2,
+                'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            ],
+            1 => [
+                'id' => 3,
+                'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            ]
+        ];
+        $this->assertInstanceOf('Cake\ORM\Query', $all_exist_snippet_query);
+        $this->assertEquals($expected_query_result, $all_exist_snippet_query->disableHydration()->toArray());
+
+        $all_exist_snippet_query = $this->Snippets
+            ->findAllExistSnippet(4);
+        $expected_query_result = [];
+        $this->assertEquals($expected_query_result, $all_exist_snippet_query->disableHydration()->toArray());
     }
 
     /**
@@ -150,6 +184,21 @@ class SnippetsTableTest extends TestCase
      */
     public function testFindAllExpiredSnippet()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $all_exist_snippet_query = $this->Snippets
+            ->findAllExpiredSnippet(3)
+            ->select(['id', 'content'], true);
+        $expected_snippet = [
+            0 => [
+                'id' => 4,
+                'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            ]
+        ];
+        $this->assertInstanceOf('Cake\ORM\Query', $all_exist_snippet_query);
+        $this->assertEquals($expected_snippet, $all_exist_snippet_query->disableHydration()->toArray());
+
+        $all_exist_snippet_query = $this->Snippets
+            ->findAllExistSnippet(4);
+        $expected_query_result = [];
+        $this->assertEquals($expected_query_result, $all_exist_snippet_query->disableHydration()->toArray());
     }
 }
