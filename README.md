@@ -95,6 +95,18 @@ $ docker exec -it PHP_CONTAINER_NAME bash
 # composer self-update && composer create-project --prefer-dist cakephp/app:4.* .
 ```
 
+### how to run PHPUnit
+```
+at PHP container
+# pwd
+/var/www/html
+
+---- Run all test ----
+$ vendor/bin/phpunit
+---- Run a specific test ----
+$ vendor/bin/phpunit TestFilePath
+```
+
 ### how to generate RSA private and public key
 ```
 at PHP container
