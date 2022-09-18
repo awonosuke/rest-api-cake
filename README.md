@@ -80,7 +80,7 @@ MIT License
 - [x] :gorilla: prepare authenticate method
 - [x] :gorilla: prepare login and logout method
 - [x] :gorilla: prepare admin user method (forced resign user, make admin, forced delete snippet)
-- [ ] :gorilla: prepare test cases
+- [x] :gorilla: prepare test cases
 
 
 ## For me
